@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const traeAI = require('../services/traeAI');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 const { body, validationResult } = require('express-validator');
 
-// Test Trae AI connection
-router.get('/health', auth, async (req, res) => {
+// Test Trae AI connection (no auth required for health check)
+router.get('/health', async (req, res) => {
   try {
     const result = await traeAI.testConnection();
     
