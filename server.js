@@ -12,6 +12,7 @@ const appRoutes = require('./routes/apps');
 const userRoutes = require('./routes/users');
 const analyticsRoutes = require('./routes/analytics');
 const aiRoutes = require('./routes/ai');
+const traeAIRoutes = require('./routes/traeai');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ app.use('/api/apps', appRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/traeai', traeAIRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
