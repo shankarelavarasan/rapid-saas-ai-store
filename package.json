@@ -25,12 +25,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/rapid-saas-ai-store.git"
+    "url": "https://github.com/shankarelavarasan/rapid-saas-ai-store.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/rapid-saas-ai-store/issues"
+    "url": "https://github.com/shankarelavarasan/rapid-saas-ai-store/issues"
   },
-  "homepage": "https://github.com/yourusername/rapid-saas-ai-store#readme",
+  "homepage": "https://github.com/shankarelavarasan/rapid-saas-ai-store#readme",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
