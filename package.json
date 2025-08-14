@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "A Global Distribution Platform for SaaS & AI Web Apps - Convert any SaaS to mobile app instantly",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
     "server": "nodemon server.js",
-    "build": "node -e \"const fs = require('fs'); if (!fs.existsSync('public')) fs.mkdirSync('public', {recursive: true}); console.log('Static frontend build completed - files ready in public directory');\"",
+    "build": "node scripts/make-public.js",
     "test": "jest",
     "lint": "echo 'Linting passed - ESLint configured but skipped for CI compatibility'",
     "lint:fix": "echo 'Lint fix completed'"
