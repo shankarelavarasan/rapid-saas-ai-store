@@ -211,47 +211,47 @@ const processRevenueSharing = async (paymentData) => {
 const handleWebhook = async (event) => {
   try {
     switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object;
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
         
-        if (paymentIntent.metadata.type === 'app_purchase') {
+      if (paymentIntent.metadata.type === 'app_purchase') {
+        await processRevenueSharing({
+          amount: paymentIntent.amount,
+          appId: paymentIntent.metadata.appId,
+          ownerId: paymentIntent.metadata.ownerId,
+          paymentIntentId: paymentIntent.id,
+          currency: paymentIntent.currency
+        });
+      }
+      break;
+
+    case 'invoice.payment_succeeded':
+      const invoice = event.data.object;
+        
+      if (invoice.subscription) {
+        const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+          
+        if (subscription.metadata.type === 'app_subscription') {
           await processRevenueSharing({
-            amount: paymentIntent.amount,
-            appId: paymentIntent.metadata.appId,
-            ownerId: paymentIntent.metadata.ownerId,
-            paymentIntentId: paymentIntent.id,
-            currency: paymentIntent.currency
+            amount: invoice.amount_paid,
+            appId: subscription.metadata.appId,
+            ownerId: subscription.metadata.ownerId,
+            subscriptionId: subscription.id,
+            paymentIntentId: invoice.payment_intent,
+            currency: invoice.currency
           });
         }
-        break;
+      }
+      break;
 
-      case 'invoice.payment_succeeded':
-        const invoice = event.data.object;
-        
-        if (invoice.subscription) {
-          const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-          
-          if (subscription.metadata.type === 'app_subscription') {
-            await processRevenueSharing({
-              amount: invoice.amount_paid,
-              appId: subscription.metadata.appId,
-              ownerId: subscription.metadata.ownerId,
-              subscriptionId: subscription.id,
-              paymentIntentId: invoice.payment_intent,
-              currency: invoice.currency
-            });
-          }
-        }
-        break;
+    case 'customer.subscription.deleted':
+      const deletedSubscription = event.data.object;
+      console.log('Subscription cancelled:', deletedSubscription.id);
+      // Handle subscription cancellation
+      break;
 
-      case 'customer.subscription.deleted':
-        const deletedSubscription = event.data.object;
-        console.log('Subscription cancelled:', deletedSubscription.id);
-        // Handle subscription cancellation
-        break;
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
+    default:
+      console.log(`Unhandled event type: ${event.type}`);
     }
 
     return { success: true };

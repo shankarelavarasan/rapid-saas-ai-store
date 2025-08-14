@@ -98,7 +98,7 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`🚀 Rapid SaaS AI Store server running on port ${PORT}`);
     console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`📱 Ready to convert SaaS to mobile apps!`);
+    console.log('📱 Ready to convert SaaS to mobile apps!');
   });
 }
 

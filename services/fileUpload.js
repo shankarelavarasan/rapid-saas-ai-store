@@ -76,7 +76,7 @@ const uploadAppIcon = async (file, options = {}) => {
     // Upload original
     const originalUpload = await cloudinary.uploader.upload(file.path || file.buffer, {
       folder: `rapid-saas-store/apps/${appId}/icons`,
-      public_id: `icon_original`,
+      public_id: 'icon_original',
       resource_type: 'image',
       overwrite: true
     });
@@ -201,7 +201,7 @@ const uploadFeatureGraphic = async (file, options = {}) => {
     if (storeType === 'play_store' || storeType === 'both') {
       const playStoreUpload = await cloudinary.uploader.upload(file.path || file.buffer, {
         folder: `rapid-saas-store/apps/${appId}/graphics`,
-        public_id: `feature_graphic_play_store`,
+        public_id: 'feature_graphic_play_store',
         resource_type: 'image',
         transformation: [
           { width: 1024, height: 500, crop: 'fill' },
@@ -223,7 +223,7 @@ const uploadFeatureGraphic = async (file, options = {}) => {
     if (storeType === 'app_store' || storeType === 'both') {
       const appStoreUpload = await cloudinary.uploader.upload(file.path || file.buffer, {
         folder: `rapid-saas-store/apps/${appId}/graphics`,
-        public_id: `feature_graphic_app_store`,
+        public_id: 'feature_graphic_app_store',
         resource_type: 'image',
         transformation: [
           { width: 1200, height: 630, crop: 'fill' },
@@ -278,7 +278,7 @@ const generateAssetsFromUrl = async (url, options = {}) => {
       const faviconUrl = `${new URL(url).origin}/favicon.ico`;
       const faviconUpload = await cloudinary.uploader.upload(faviconUrl, {
         folder: `rapid-saas-store/apps/${appId}/assets`,
-        public_id: `favicon`,
+        public_id: 'favicon',
         resource_type: 'image',
         transformation: [
           { width: 512, height: 512, crop: 'fill' },
@@ -306,7 +306,7 @@ const generateAssetsFromUrl = async (url, options = {}) => {
         </svg>
       `).toString('base64')}`, {
         folder: `rapid-saas-store/apps/${appId}/assets`,
-        public_id: `generated_icon`,
+        public_id: 'generated_icon',
         resource_type: 'image',
         overwrite: true
       });
