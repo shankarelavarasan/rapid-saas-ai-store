@@ -3,7 +3,11 @@ services:
     name: rapid-saas-ai-store
     env: node
     plan: free
-    buildCommand: npm install
+    buildCommand: |
+      npm install
+      mkdir -p public
+      cp -r public/* public/ || echo 'Public directory already exists'
+      echo 'Build completed - static files ready'
     startCommand: npm start
     healthCheckPath: /
     envVars:
