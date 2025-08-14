@@ -10,7 +10,7 @@
         var l = window.location;
         l.replace(
             l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/public/index.html' +
+            l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/index.html' +
             (l.search ? '&' + l.search.slice(1) : '') +
             l.hash
         );
