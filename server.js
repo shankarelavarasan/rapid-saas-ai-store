@@ -73,16 +73,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Serve index.html for all non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api/')) {
-    // Try public/index.html first, fallback to root index.html
     const publicIndexPath = path.join(__dirname, 'public', 'index.html');
     const rootIndexPath = path.join(__dirname, 'index.html');
-    
-    // Check if public/index.html exists, otherwise use root
+
     const fs = require('fs');
     if (fs.existsSync(publicIndexPath)) {
       res.sendFile(publicIndexPath);
-    } else {
+    } else if (fs.existsSync(rootIndexPath)) {
       res.sendFile(rootIndexPath);
+    } else {
+      res.status(404).send('index.html not found');
     }
   }
 });
