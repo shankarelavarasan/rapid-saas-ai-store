@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "server": "nodemon server.js",
-    "build": "if not exist public mkdir public && echo Static frontend build completed - files ready in public directory",
+    "build": "node -e \"const fs = require('fs'); if (!fs.existsSync('public')) fs.mkdirSync('public', {recursive: true}); console.log('Static frontend build completed - files ready in public directory');\"",
     "test": "jest",
     "lint": "echo 'Linting passed - ESLint configured but skipped for CI compatibility'",
     "lint:fix": "echo 'Lint fix completed'"
