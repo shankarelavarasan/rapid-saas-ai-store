@@ -66,13 +66,24 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Serve static files from root directory
+// Serve static files from both root and public directories
 app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve index.html for all non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api/')) {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    // Try public/index.html first, fallback to root index.html
+    const publicIndexPath = path.join(__dirname, 'public', 'index.html');
+    const rootIndexPath = path.join(__dirname, 'index.html');
+    
+    // Check if public/index.html exists, otherwise use root
+    const fs = require('fs');
+    if (fs.existsSync(publicIndexPath)) {
+      res.sendFile(publicIndexPath);
+    } else {
+      res.sendFile(rootIndexPath);
+    }
   }
 });
 
