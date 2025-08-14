@@ -54,7 +54,7 @@
     "multer-storage-cloudinary": "^4.0.0",
     "openai": "^4.8.0",
     "puppeteer": "^24.16.1",
-    "sharp": "^0.32.6",
+    "sharp": "^0.33.5",
     "stripe": "^13.6.0",
     "validator": "^13.11.0"
   },
