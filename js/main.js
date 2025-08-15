@@ -726,16 +726,3 @@ document.addEventListener('visibilitychange', function() {
 
 // Service Worker registration removed to prevent errors
 // Uncomment and add sw.js file if PWA capabilities are needed
-/*
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/sw.js')
-      .then(function(registration) {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(function(error) {
-        console.log('ServiceWorker registration failed');
-      });
-  });
-}
-*/
