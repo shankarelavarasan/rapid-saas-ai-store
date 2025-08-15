@@ -379,7 +379,7 @@ function createStoreAppCard(app) {
   card.innerHTML = `
         <div class="app-card-header">
             <div class="app-icon">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='/assets/default-app-icon.png'">
+                <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.png'">
             </div>
             <div class="app-basic-info">
                 <h3 class="app-name">${app.name}</h3>
@@ -578,7 +578,7 @@ function installStoreApp(appId) {
   const installContent = `
         <div class="install-modal">
             <div class="install-header">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" class="install-icon">
+                <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" class="install-icon">
                 <div class="install-info">
                     <h3>${app.name}</h3>
                     <p>by ${app.developer || 'Unknown Developer'}</p>
@@ -623,7 +623,7 @@ function showAppDetails(app) {
   const detailsContent = `
         <div class="app-details">
             <div class="app-details-header">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" class="details-icon">
+                <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" class="details-icon">
                 <div class="details-info">
                     <h2>${app.name}</h2>
                     <p class="developer">by ${app.developer || 'Unknown Developer'}</p>
