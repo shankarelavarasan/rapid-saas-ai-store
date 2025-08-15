@@ -4,8 +4,15 @@
     <meta charset="utf-8">
     <title>Rapid SaaS AI Store - Redirecting...</title>
     <script type="text/javascript">
-        // GitHub Pages redirect - no public folder needed
-        window.location.href = window.location.origin + '/rapid-saas-ai-store/';
+        // GitHub Pages redirect with infinite loop protection
+        const targetPath = '/rapid-saas-ai-store/';
+        const currentPath = window.location.pathname;
+        
+        // Only redirect if not already on target path and not already redirected
+        if (currentPath !== targetPath && !sessionStorage.getItem('redirected')) {
+            sessionStorage.setItem('redirected', 'true');
+            window.location.href = window.location.origin + targetPath;
+        }
     </script>
     <noscript>
         <meta http-equiv="refresh" content="0; url=/rapid-saas-ai-store/">
