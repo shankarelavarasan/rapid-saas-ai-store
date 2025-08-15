@@ -729,5 +729,17 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 
+// Global function to handle Get Started button click
+function loadApps() {
+  // Navigate to app store section
+  const appsSection = document.getElementById('apps');
+  if (appsSection) {
+    appsSection.scrollIntoView({ behavior: 'smooth' });
+  }
+  
+  // Load featured apps if not already loaded
+  loadFeaturedApps();
+}
+
 // Service Worker registration removed to prevent errors
 // Uncomment and add sw.js file if PWA capabilities are needed
