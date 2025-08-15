@@ -204,7 +204,8 @@ async function loadApps(reset = false) {
       search: appStoreState.searchQuery
     });
         
-    const response = await fetch('./data/store-apps.json');
+    const appsUrl = new URL('./data/store-apps.json', window.location.href).toString();
+    const response = await fetch(appsUrl);
     const data = await response.json();
         
     if (data.success) {

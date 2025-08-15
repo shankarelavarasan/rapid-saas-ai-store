@@ -335,7 +335,8 @@ function showConversionSuccess(analysis) {
 async function loadFeaturedApps() {
   try {
     // Use local JSON file for GitHub Pages compatibility
-    const response = await fetch('./data/featured-apps.json');
+    const appsUrl = new URL('./data/featured-apps.json', window.location.href).toString();
+    const response = await fetch(appsUrl);
     const data = await response.json();
         
     if (data.success && data.apps) {
@@ -729,14 +730,37 @@ document.addEventListener('visibilitychange', function() {
 
 // Global function to handle Get Started button click
 function loadApps() {
-  // Navigate to app store section
-  const appsSection = document.getElementById('apps');
-  if (appsSection) {
-    appsSection.scrollIntoView({ behavior: 'smooth' });
+  console.log('loadApps() called - navigating to apps section');
+  try {
+    // Navigate to app store section
+    const appsSection = document.getElementById('apps');
+    if (appsSection) {
+      appsSection.scrollIntoView({ behavior: 'smooth' });
+      console.log('Scrolled to apps section');
+    } else {
+      console.warn('Apps section not found');
+    }
+    
+    // Load featured apps if not already loaded
+    loadFeaturedApps();
+    console.log('Featured apps loading initiated');
+  } catch (error) {
+    console.error('Error in loadApps():', error);
   }
-  
-  // Load featured apps if not already loaded
-  loadFeaturedApps();
+}
+
+// Service Worker cleanup - temporary code to clear old caches
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations?.().then(regs => {
+    regs.forEach(r => r.unregister());
+    console.log('Service workers unregistered');
+  });
+}
+if (window.caches?.keys) {
+  caches.keys().then(keys => {
+    keys.forEach(k => caches.delete(k));
+    console.log('Caches cleared');
+  });
 }
 
 // Service Worker registration removed to prevent errors
