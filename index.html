@@ -27,7 +27,7 @@
                 <div class="container">
                     <h2 class="hero-title" data-aos="fade-up" data-aos-delay="100">Convert Your SaaS to Mobile Apps</h2>
                     <p class="hero-description" data-aos="fade-up" data-aos-delay="200">Transform your web applications into native mobile experiences with AI-powered conversion.</p>
-                    <button id="get-started" class="btn btn-primary" data-aos="fade-up" data-aos-delay="300">Get Started</button>
+                    <button id="start-conversion" class="btn btn-primary" data-aos="fade-up" data-aos-delay="300">Get Started</button>
                 </div>
             </section>
 
@@ -63,16 +63,16 @@
             }
             
             // Setup Get Started button
-            const getStartedBtn = document.getElementById('get-started');
-            if (getStartedBtn) {
-                getStartedBtn.addEventListener('click', function() {
+            const startConversionBtn = document.getElementById('start-conversion');
+            if (startConversionBtn) {
+                startConversionBtn.addEventListener('click', function() {
                     const appsSection = document.getElementById('apps');
                     if (appsSection) {
                         appsSection.scrollIntoView({ behavior: 'smooth' });
                     }
-                    // Load apps if function exists
-                    if (typeof loadApps === 'function') {
-                        loadApps();
+                    // Load featured apps
+                    if (typeof loadFeaturedApps === 'function') {
+                        loadFeaturedApps();
                     }
                 });
             }
