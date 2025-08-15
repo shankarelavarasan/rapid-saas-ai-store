@@ -1,6 +1,6 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const OpenAI = require('openai');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import OpenAI from 'openai';
 
 // Initialize OpenAI client only if API key is available
 let openai = null;
@@ -526,7 +526,7 @@ Make descriptions compelling, clear, and conversion-focused.
   }
 };
 
-module.exports = {
+export {
   analyzeWebsite,
   generateAppAssets,
   categorizeApp,

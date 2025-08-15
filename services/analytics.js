@@ -1,4 +1,4 @@
-const { supabase } = require('./database');
+import { supabase } from './database.js';
 
 /**
  * Analytics Service
@@ -454,7 +454,7 @@ const getAppAnalytics = async (appId, userId, options = {}) => {
   }
 };
 
-module.exports = {
+export {
   getAnalytics,
   recordEvent,
   getRevenueData,

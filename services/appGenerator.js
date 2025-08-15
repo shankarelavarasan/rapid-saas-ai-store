@@ -1,10 +1,10 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
-const sharp = require('sharp');
-const fs = require('fs').promises;
-const path = require('path');
-const { uploadFile } = require('./database');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import puppeteer from 'puppeteer';
+import sharp from 'sharp';
+import fs from 'fs/promises';
+import path from 'path';
+import { uploadFile } from './database.js';
 
 /**
  * Validate URL accessibility and mobile responsiveness
@@ -434,7 +434,7 @@ const checkBuildStatus = async (appId) => {
   };
 };
 
-module.exports = {
+export {
   validateUrl,
   generateAppAssets,
   createWebViewApp,

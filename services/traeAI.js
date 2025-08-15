@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 class TraeAIService {
   constructor() {
@@ -249,4 +249,4 @@ class TraeAIService {
   }
 }
 
-module.exports = new TraeAIService();
+export default new TraeAIService();

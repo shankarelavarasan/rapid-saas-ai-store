@@ -1,9 +1,9 @@
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const path = require('path');
-const fs = require('fs').promises;
-const sharp = require('sharp');
+import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
+import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import path from 'path';
+import fs from 'fs/promises';
+import sharp from 'sharp';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -466,7 +466,7 @@ const handleUploadError = (error, req, res, next) => {
   });
 };
 
-module.exports = {
+export {
   upload,
   uploadSingle,
   uploadMultiple,

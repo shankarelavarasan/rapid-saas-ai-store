@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { body, validationResult } from 'express-validator';
+import { createUser, getUserByEmail, getUserById, updateUser } from '../services/database.js';
+import { auth } from '../middleware/auth.js';
+
 const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator');
-const { createUser, getUserByEmail, getUserById, updateUser } = require('../services/database');
-const { auth } = require('../middleware/auth');
 
 // @route   POST /api/users/register
 // @desc    Register a new user
@@ -316,4 +317,4 @@ router.post('/logout', auth, (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;

@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import traeAI from '../services/traeAI.js';
+import { auth } from '../middleware/auth.js';
+import { body, validationResult } from 'express-validator';
+
 const router = express.Router();
-const traeAI = require('../services/traeAI');
-const { auth } = require('../middleware/auth');
-const { body, validationResult } = require('express-validator');
 
 // Test Trae AI connection (no auth required for health check)
 router.get('/health', async (req, res) => {
@@ -225,4 +226,4 @@ router.post('/document', [
   }
 });
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
-const Stripe = require('stripe');
-const { recordRevenue, getRevenueData } = require('./database');
+import Stripe from 'stripe';
+import { recordRevenue, getRevenueData } from './database.js';
 
 // Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -464,7 +464,7 @@ const createSetupIntent = async (customerId) => {
   }
 };
 
-module.exports = {
+export {
   createCustomer,
   createPaymentIntent,
   createSubscription,

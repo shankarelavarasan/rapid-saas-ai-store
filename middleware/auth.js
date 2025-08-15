@@ -1,5 +1,6 @@
-const jwt = require('jsonwebtoken');
-const { getUserById } = require('../services/database');
+import jwt from 'jsonwebtoken';
+import rateLimit from 'express-rate-limit';
+import { getUserById } from '../services/database.js';
 
 /**
  * Authentication middleware
@@ -158,7 +159,7 @@ const developerOrAdmin = authorize('developer', 'admin');
 /**
  * Rate limiting middleware for authentication endpoints
  */
-const authRateLimit = require('express-rate-limit')({
+const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // limit each IP to 5 requests per windowMs for auth endpoints
   message: {
@@ -203,7 +204,7 @@ const validateApiKey = (req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   auth,
   optionalAuth,
   authorize,

@@ -1,7 +1,8 @@
-const express = require('express');
+import express from 'express';
+import { getAnalytics, recordEvent, getRevenueData } from '../services/analytics.js';
+import { auth } from '../middleware/auth.js';
+
 const router = express.Router();
-const { getAnalytics, recordEvent, getRevenueData } = require('../services/analytics');
-const { auth } = require('../middleware/auth');
 
 // @route   GET /api/analytics/dashboard
 // @desc    Get dashboard analytics for user
@@ -338,4 +339,4 @@ router.get('/compare', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

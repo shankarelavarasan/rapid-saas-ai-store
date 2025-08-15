@@ -1,8 +1,9 @@
-const express = require('express');
+import express from 'express';
+import { analyzeWebsite, generateAppAssets, categorizeApp, generateDescription } from '../services/aiAnalyzer.js';
+import { generateIcon, generateSplashScreen } from '../services/iconGenerator.js';
+import { auth } from '../middleware/auth.js';
+
 const router = express.Router();
-const { analyzeWebsite, generateAppAssets, categorizeApp, generateDescription } = require('../services/aiAnalyzer');
-const { generateIcon, generateSplashScreen } = require('../services/iconGenerator');
-const { auth } = require('../middleware/auth');
 
 // @route   POST /api/ai/analyze-website
 // @desc    AI-powered website analysis
@@ -440,4 +441,4 @@ router.get('/suggestions/:appId', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

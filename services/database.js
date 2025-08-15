@@ -1,4 +1,4 @@
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
 // Initialize Supabase client only if environment variables are available
 let supabase = null;
@@ -428,7 +428,7 @@ const deleteFile = async (bucket, filePath) => {
   }
 };
 
-module.exports = {
+export {
   // User functions
   createUser,
   getUserByEmail,

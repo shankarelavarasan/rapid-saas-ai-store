@@ -290,7 +290,7 @@ async function performConversion(formData) {
   return {
     appId: generateAppId(),
     appName: await extractAppName(formData.url),
-    appIcon: './assets/generated-icon.png',
+    appIcon: '/assets/generated-icon.png',
     downloadUrl: '/downloads/app.apk',
     previewUrl: formData.url,
     buildTime: Date.now() - conversionState.startTime,
@@ -401,9 +401,9 @@ async function generateAssets(formData) {
     console.error('Asset generation error:', error);
     // Continue with mock assets for demo
     return {
-      icon: './assets/generated-icon.png',
-            splashScreen: './assets/generated-splash.png',
-            screenshots: ['./assets/screenshot-1.png', './assets/screenshot-2.png']
+      icon: '/assets/generated-icon.png',
+      splashScreen: '/assets/generated-splash.png',
+      screenshots: ['/assets/screenshot-1.png', '/assets/screenshot-2.png']
     };
   }
 }
@@ -581,7 +581,7 @@ function showConversionSuccess(result) {
                 
                 <div class="app-preview-card">
                     <div class="app-icon">
-                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='./assets/default-app-icon.png'">
+                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='/assets/default-app-icon.png'">
                     </div>
                     <div class="app-info">
                         <h3>${result.appName}</h3>

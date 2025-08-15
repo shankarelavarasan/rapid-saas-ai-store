@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="200" viewBox="0 0 300 200">
+  <rect width="300" height="200" fill="#F9FAFB"/>
+  <rect x="20" y="20" width="260" height="40" rx="8" fill="#10B981"/>
+  <text x="150" y="45" text-anchor="middle" fill="white" font-family="Arial" font-size="16">App Screenshot 2</text>
+  <rect x="20" y="80" width="80" height="100" rx="4" fill="#D1FAE5"/>
+  <rect x="120" y="80" width="80" height="100" rx="4" fill="#D1FAE5"/>
+  <rect x="220" y="80" width="60" height="100" rx="4" fill="#D1FAE5"/>
+</svg>

@@ -1,18 +1,25 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-const path = require('path');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import dotenv from 'dotenv';
+dotenv.config();
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import routes
-const appRoutes = require('./routes/apps');
-const userRoutes = require('./routes/users');
-const analyticsRoutes = require('./routes/analytics');
-const aiRoutes = require('./routes/ai');
-const traeAIRoutes = require('./routes/traeai');
+import appRoutes from './routes/apps.js';
+import userRoutes from './routes/users.js';
+import analyticsRoutes from './routes/analytics.js';
+import aiRoutes from './routes/ai.js';
+import traeAIRoutes from './routes/traeai.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -79,7 +86,6 @@ app.get('*', (req, res) => {
     const publicIndexPath = path.join(__dirname, 'public', 'index.html');
     const rootIndexPath = path.join(__dirname, 'index.html');
 
-    const fs = require('fs');
     if (fs.existsSync(publicIndexPath)) {
       res.sendFile(publicIndexPath);
     } else if (fs.existsSync(rootIndexPath)) {
@@ -116,4 +122,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-module.exports = app;
+export default app;

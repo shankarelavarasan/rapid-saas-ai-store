@@ -1,7 +1,7 @@
-const sharp = require('sharp');
-const fs = require('fs').promises;
-const path = require('path');
-const { uploadSingle } = require('./fileUpload');
+import sharp from 'sharp';
+import fs from 'fs/promises';
+import path from 'path';
+import { uploadSingle } from './fileUpload.js';
 
 /**
  * Generate app icon using AI or template-based approach
@@ -253,7 +253,7 @@ async function generateIconSet(options) {
   }
 }
 
-module.exports = {
+export {
   generateIcon,
   generateSplashScreen,
   generateIconSet

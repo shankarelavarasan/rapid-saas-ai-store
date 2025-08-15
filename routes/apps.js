@@ -1,11 +1,12 @@
-const express = require('express');
+import express from 'express';
+import multer from 'multer';
+import { validateUrl, generateAppAssets, createWebViewApp } from '../services/appGenerator.js';
+import { analyzeWebsite } from '../services/aiAnalyzer.js';
+import { uploadSingle, uploadMultiple } from '../services/fileUpload.js';
+import { createApp, getApps, getAppById, updateApp, deleteApp } from '../services/database.js';
+import { auth } from '../middleware/auth.js';
+
 const router = express.Router();
-const multer = require('multer');
-const { validateUrl, generateAppAssets, createWebViewApp } = require('../services/appGenerator');
-const { analyzeWebsite } = require('../services/aiAnalyzer');
-const { uploadSingle, uploadMultiple } = require('../services/fileUpload');
-const { createApp, getApps, getAppById, updateApp, deleteApp } = require('../services/database');
-const { auth } = require('../middleware/auth');
 
 // Configure multer for file uploads
 const upload = multer({
@@ -339,4 +340,4 @@ router.post('/:id/publish', auth, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

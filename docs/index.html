@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
 </head>
 <body>
     <div id="app">
@@ -25,16 +25,16 @@
         <main class="main">
             <section id="home" class="hero">
                 <div class="container">
-                    <h2 class="hero-title">Convert Your SaaS to Mobile Apps</h2>
-                    <p class="hero-description">Transform your web applications into native mobile experiences with AI-powered conversion.</p>
-                    <button id="start-conversion" class="btn btn-primary">Get Started</button>
+                    <h2 class="hero-title" data-aos="fade-up" data-aos-delay="100">Convert Your SaaS to Mobile Apps</h2>
+                    <p class="hero-description" data-aos="fade-up" data-aos-delay="200">Transform your web applications into native mobile experiences with AI-powered conversion.</p>
+                    <button id="get-started" class="btn btn-primary" data-aos="fade-up" data-aos-delay="300">Get Started</button>
                 </div>
             </section>
 
             <section id="apps" class="apps-section">
                 <div class="container">
-                    <h2>Available Apps</h2>
-                    <div id="apps-container" class="apps-grid">
+                    <h2 data-aos="fade-up">Available Apps</h2>
+                    <div id="apps-container" class="apps-grid" data-aos="fade-up" data-aos-delay="100">
                         <!-- Apps will be loaded here -->
                     </div>
                 </div>
@@ -48,12 +48,34 @@
         </footer>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS animations first
+        // Initialize AOS animations and button actions
         document.addEventListener('DOMContentLoaded', function() {
-            AOS.init();
-            loadApps();
+            // Initialize AOS
+            if (typeof AOS !== 'undefined') {
+                AOS.init({
+                    duration: 800,
+                    easing: 'ease-in-out',
+                    once: true,
+                    offset: 100
+                });
+            }
+            
+            // Setup Get Started button
+            const getStartedBtn = document.getElementById('get-started');
+            if (getStartedBtn) {
+                getStartedBtn.addEventListener('click', function() {
+                    const appsSection = document.getElementById('apps');
+                    if (appsSection) {
+                        appsSection.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    // Load apps if function exists
+                    if (typeof loadApps === 'function') {
+                        loadApps();
+                    }
+                });
+            }
         });
     </script>
     <script src="js/main.js" defer></script>
