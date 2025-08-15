@@ -204,7 +204,7 @@ async function loadApps(reset = false) {
       search: appStoreState.searchQuery
     });
         
-    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/public?${params}`);
+    const response = await fetch('./data/store-apps.json');
     const data = await response.json();
         
     if (data.success) {
