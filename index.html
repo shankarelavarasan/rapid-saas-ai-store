@@ -4,18 +4,21 @@
     <meta charset="utf-8">
     <title>Rapid SaaS AI Store - Redirecting...</title>
     <script type="text/javascript">
-        // GitHub Pages redirect with infinite loop protection
-        const isGithubPages = window.location.hostname.includes('github.io');
-        const targetPath = isGithubPages ? '/rapid-saas-ai-store/' : '/';
-        const currentPath = window.location.pathname;
-        
-        // Normalize paths to handle trailing slash differences
-        const normalize = p => p.endsWith('/') ? p : p + '/';
-        
-        if (normalize(currentPath) !== normalize(targetPath) && !sessionStorage.getItem('redirected')) {
-            sessionStorage.setItem('redirected', 'true');
-            window.location.href = window.location.origin + targetPath;
-        }
+        document.addEventListener("DOMContentLoaded", function() {
+            // GitHub Pages redirect with infinite loop protection
+            const isGithubPages = window.location.hostname.includes('github.io');
+            const targetPath = isGithubPages ? '/rapid-saas-ai-store/' : '/';
+            const currentPath = window.location.pathname;
+            
+            // Normalize paths to handle trailing slash differences
+            const normalize = p => p.endsWith('/') ? p : p + '/';
+            
+            if (normalize(currentPath) !== normalize(targetPath) && !sessionStorage.getItem('redirected')) {
+                sessionStorage.setItem('redirected', 'true');
+                // Use replace() to avoid adding to browser history
+                window.location.replace(window.location.origin + targetPath);
+            }
+        });
     </script>
     <noscript>
         <meta http-equiv="refresh" content="0; url=/rapid-saas-ai-store/">
