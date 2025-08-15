@@ -240,8 +240,8 @@ function loadDemoStoreApps() {
       name: 'TaskFlow Pro',
       description: 'Advanced project management and team collaboration platform',
       longDescription: 'TaskFlow Pro is a comprehensive project management solution that helps teams collaborate effectively, track progress, and deliver projects on time.',
-      icon: '/assets/demo-app-1.png',
-      screenshots: ['/assets/screenshot-1.png', '/assets/screenshot-2.png'],
+      icon: './assets/demo-app-1.png',
+        screenshots: ['./assets/screenshot-1.png', './assets/screenshot-2.png'],
       rating: 4.8,
       downloads: 12500,
       category: 'productivity',
@@ -256,8 +256,8 @@ function loadDemoStoreApps() {
       name: 'FinanceTracker',
       description: 'Personal finance management and expense tracking',
       longDescription: 'Take control of your finances with FinanceTracker. Track expenses, set budgets, and achieve your financial goals.',
-      icon: '/assets/demo-app-2.png',
-      screenshots: ['/assets/screenshot-3.png', '/assets/screenshot-4.png'],
+      icon: './assets/demo-app-2.png',
+        screenshots: ['./assets/screenshot-3.png', './assets/screenshot-4.png'],
       rating: 4.6,
       downloads: 8500,
       category: 'finance',
@@ -272,8 +272,8 @@ function loadDemoStoreApps() {
       name: 'LearnHub',
       description: 'Online learning platform with interactive courses',
       longDescription: 'Expand your knowledge with LearnHub\'s extensive library of interactive courses and expert-led tutorials.',
-      icon: '/assets/demo-app-3.png',
-      screenshots: ['/assets/screenshot-5.png', '/assets/screenshot-6.png'],
+      icon: './assets/demo-app-3.png',
+        screenshots: ['./assets/screenshot-5.png', './assets/screenshot-6.png'],
       rating: 4.9,
       downloads: 21000,
       category: 'education',
@@ -288,8 +288,8 @@ function loadDemoStoreApps() {
       name: 'HealthSync',
       description: 'Comprehensive health and fitness tracking',
       longDescription: 'Monitor your health metrics, track workouts, and maintain a healthy lifestyle with HealthSync.',
-      icon: '/assets/demo-app-4.png',
-      screenshots: ['/assets/screenshot-7.png', '/assets/screenshot-8.png'],
+      icon: './assets/demo-app-4.png',
+        screenshots: ['./assets/screenshot-7.png', './assets/screenshot-8.png'],
       rating: 4.7,
       downloads: 15800,
       category: 'health',
@@ -304,8 +304,8 @@ function loadDemoStoreApps() {
       name: 'SocialConnect',
       description: 'Professional networking and collaboration',
       longDescription: 'Build meaningful professional connections and collaborate with industry experts using SocialConnect.',
-      icon: '/assets/demo-app-5.png',
-      screenshots: ['/assets/screenshot-9.png', '/assets/screenshot-10.png'],
+      icon: './assets/demo-app-5.png',
+        screenshots: ['./assets/screenshot-9.png', './assets/screenshot-10.png'],
       rating: 4.4,
       downloads: 9200,
       category: 'social',
@@ -320,8 +320,8 @@ function loadDemoStoreApps() {
       name: 'TravelPlanner',
       description: 'Smart travel planning and booking assistant',
       longDescription: 'Plan your perfect trip with AI-powered recommendations, booking assistance, and travel guides.',
-      icon: '/assets/demo-app-6.png',
-      screenshots: ['/assets/screenshot-11.png', '/assets/screenshot-12.png'],
+      icon: './assets/demo-app-6.png',
+        screenshots: ['./assets/screenshot-11.png', './assets/screenshot-12.png'],
       rating: 4.5,
       downloads: 11300,
       category: 'travel',
@@ -379,7 +379,7 @@ function createStoreAppCard(app) {
   card.innerHTML = `
         <div class="app-card-header">
             <div class="app-icon">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='/assets/default-app-icon.png'">
+                <img src="${app.icon || './assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='./assets/default-app-icon.png'">
             </div>
             <div class="app-basic-info">
                 <h3 class="app-name">${app.name}</h3>
@@ -578,7 +578,7 @@ function installStoreApp(appId) {
   const installContent = `
         <div class="install-modal">
             <div class="install-header">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" class="install-icon">
+                <img src="${app.icon || './assets/default-app-icon.png'}" alt="${app.name}" class="install-icon">
                 <div class="install-info">
                     <h3>${app.name}</h3>
                     <p>by ${app.developer || 'Unknown Developer'}</p>
@@ -623,7 +623,7 @@ function showAppDetails(app) {
   const detailsContent = `
         <div class="app-details">
             <div class="app-details-header">
-                <img src="${app.icon || '/assets/default-app-icon.png'}" alt="${app.name}" class="details-icon">
+                <img src="${app.icon || './assets/default-app-icon.png'}" alt="${app.name}" class="details-icon">
                 <div class="details-info">
                     <h2>${app.name}</h2>
                     <p class="developer">by ${app.developer || 'Unknown Developer'}</p>
@@ -652,7 +652,7 @@ function showAppDetails(app) {
                 <div class="screenshots-section">
                     <h3>Screenshots</h3>
                     <div class="screenshots-grid">
-                        ${(app.screenshots || ['/assets/screenshot-1.png', '/assets/screenshot-2.png']).map(screenshot => 
+                        ${(app.screenshots || ['./assets/screenshot-1.png', './assets/screenshot-2.png']).map(screenshot => 
     `<img src="${screenshot}" alt="Screenshot" class="screenshot" onclick="openScreenshot('${screenshot}')"`
   ).join('')}
                     </div>
