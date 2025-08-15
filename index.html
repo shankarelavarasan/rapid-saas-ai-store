@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
 </head>
 <body>
     <div id="app">
@@ -48,18 +48,16 @@
         </footer>
     </div>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="js/main.js" defer></script>
-    <script src="js/app-store.js" defer></script>
-    <script src="js/conversion.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        // Initialize AOS animations
-        AOS.init();
-        
-        // Load apps on page load
+        // Initialize AOS animations first
         document.addEventListener('DOMContentLoaded', function() {
+            AOS.init();
             loadApps();
         });
     </script>
+    <script src="js/main.js" defer></script>
+    <script src="js/app-store.js" defer></script>
+    <script src="js/conversion.js" defer></script>
 </body>
 </html>
