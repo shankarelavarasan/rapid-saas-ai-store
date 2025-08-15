@@ -178,19 +178,17 @@ function handleSmoothScroll(e) {
 }
 
 function scrollToConversion() {
-  const convertSection = document.getElementById('convert');
-  if (convertSection) {
-    const offsetTop = convertSection.offsetTop - 80;
+  const appsSection = document.getElementById('apps');
+  if (appsSection) {
+    const offsetTop = appsSection.offsetTop - 80;
     window.scrollTo({
       top: offsetTop,
       behavior: 'smooth'
     });
         
-    // Focus on URL input after scroll
+    // Load apps after scroll
     setTimeout(() => {
-      if (elements.saasUrlInput) {
-        elements.saasUrlInput.focus();
-      }
+      loadFeaturedApps();
     }, 500);
   }
 }
