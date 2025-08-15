@@ -28,7 +28,7 @@ const elements = {
   demoModal: document.getElementById('demo-modal'),
   demoVideo: document.getElementById('demo-video'),
   appSearch: document.getElementById('app-search'),
-  appsGrid: document.getElementById('apps-grid'),
+  appsGrid: document.getElementById('apps-container'),
   loadMoreAppsBtn: document.getElementById('load-more-apps')
 };
 
