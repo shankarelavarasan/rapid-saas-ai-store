@@ -321,7 +321,7 @@ async function performConversionStep(stepId, formData) {
 
 async function validateWebsite(url) {
   try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/validate`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/analyze`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
@@ -410,10 +410,19 @@ async function generateAssets(formData) {
 
 async function buildMobileApp(formData) {
   try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/build`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/generate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData)
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('authToken') || 'demo-token'}`
+      },
+      body: JSON.stringify({
+        url: formData.url,
+        appName: formData.appName || 'Generated App',
+        description: formData.description || 'Mobile app generated from SaaS',
+        category: formData.category || 'productivity',
+        targetPlatforms: formData.targetPlatforms || ['android', 'ios']
+      })
     });
         
     const data = await response.json();
