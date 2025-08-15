@@ -1,0 +1,59 @@
+{
+  "success": true,
+  "apps": [
+    {
+      "id": "demo-1",
+      "name": "TaskFlow Pro",
+      "description": "Project management made simple",
+      "icon": "/assets/demo-app-1.png",
+      "rating": 4.8,
+      "downloads": 1200,
+      "category": "productivity"
+    },
+    {
+      "id": "demo-2",
+      "name": "FinanceTracker",
+      "description": "Track your expenses effortlessly",
+      "icon": "/assets/demo-app-2.png",
+      "rating": 4.6,
+      "downloads": 850,
+      "category": "finance"
+    },
+    {
+      "id": "demo-3",
+      "name": "LearnHub",
+      "description": "Online learning platform",
+      "icon": "/assets/demo-app-3.png",
+      "rating": 4.9,
+      "downloads": 2100,
+      "category": "education"
+    },
+    {
+      "id": "demo-4",
+      "name": "CodeEditor Pro",
+      "description": "Advanced code editing tools",
+      "icon": "/assets/demo-app-4.png",
+      "rating": 4.7,
+      "downloads": 1500,
+      "category": "development"
+    },
+    {
+      "id": "demo-5",
+      "name": "HealthTracker",
+      "description": "Monitor your health metrics",
+      "icon": "/assets/demo-app-5.png",
+      "rating": 4.5,
+      "downloads": 980,
+      "category": "health"
+    },
+    {
+      "id": "demo-6",
+      "name": "PhotoEditor",
+      "description": "Professional photo editing",
+      "icon": "/assets/demo-app-6.png",
+      "rating": 4.8,
+      "downloads": 1800,
+      "category": "design"
+    }
+  ]
+}

@@ -336,11 +336,14 @@ function showConversionSuccess(analysis) {
 // App Store Functions
 async function loadFeaturedApps() {
   try {
-    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/public?featured=true&limit=6`);
+    // Use local JSON file for GitHub Pages compatibility
+    const response = await fetch('./data/featured-apps.json');
     const data = await response.json();
         
     if (data.success && data.apps) {
       renderApps(data.apps);
+    } else {
+      renderDemoApps();
     }
   } catch (error) {
     console.error('Error loading featured apps:', error);
@@ -719,10 +722,10 @@ window.closeModal = closeModal;
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     // Page is hidden
-    console.log('Page hidden');
+    // console.log('Page hidden'); // Commented to reduce console spam
   } else {
     // Page is visible
-    console.log('Page visible');
+    // console.log('Page visible'); // Commented to reduce console spam
   }
 });
 
