@@ -751,19 +751,6 @@ function loadApps() {
   }
 }
 
-// Service Worker cleanup - temporary code to clear old caches
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations?.().then(regs => {
-    regs.forEach(r => r.unregister());
-    console.log('Service workers unregistered');
-  });
-}
-if (window.caches?.keys) {
-  caches.keys().then(keys => {
-    keys.forEach(k => caches.delete(k));
-    console.log('Caches cleared');
-  });
-}
-
 // Service Worker registration removed to prevent errors
 // Uncomment and add sw.js file if PWA capabilities are needed
+// For PWA support, add service worker registration here
