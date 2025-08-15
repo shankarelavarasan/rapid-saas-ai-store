@@ -204,8 +204,12 @@ const validateApiKey = (req, res, next) => {
   }
 };
 
+// Alias for backward compatibility
+const authenticateToken = auth;
+
 export {
   auth,
+  authenticateToken,
   optionalAuth,
   authorize,
   adminOnly,

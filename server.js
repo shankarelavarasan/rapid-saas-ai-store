@@ -20,6 +20,10 @@ import userRoutes from './routes/users.js';
 import analyticsRoutes from './routes/analytics.js';
 import aiRoutes from './routes/ai.js';
 import traeAIRoutes from './routes/traeai.js';
+import legalRoutes from './routes/legal.js';
+import qualityRoutes from './routes/quality.js';
+import partnershipRoutes from './routes/partnerships.js';
+import globalRoutes from './routes/global.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -60,6 +64,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/traeai', traeAIRoutes);
+app.use('/api/legal', legalRoutes);
+app.use('/api/quality', qualityRoutes);
+app.use('/api/partnerships', partnershipRoutes);
+app.use('/api/global', globalRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

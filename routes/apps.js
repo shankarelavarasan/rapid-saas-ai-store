@@ -23,6 +23,41 @@ const upload = multer({
   }
 });
 
+// @route   POST /api/apps/validate
+// @desc    Validate a SaaS URL for conversion readiness
+// @access  Public
+router.post('/validate', async (req, res) => {
+  try {
+    const { url } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+
+    // Validate URL format and accessibility
+    const validation = await validateUrl(url);
+    
+    res.json({
+      success: validation.isValid,
+      url: url,
+      accessible: validation.isAccessible,
+      responsive: validation.isResponsive,
+      https: validation.isHttps,
+      errors: validation.errors || [],
+      warnings: validation.warnings || [],
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('URL Validation Error:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to validate URL', 
+      message: error.message 
+    });
+  }
+});
+
 // @route   POST /api/apps/analyze
 // @desc    Analyze a SaaS URL and extract metadata
 // @access  Public

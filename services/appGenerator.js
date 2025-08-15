@@ -12,6 +12,9 @@ import { uploadFile } from './database.js';
 const validateUrl = async (url) => {
   const validation = {
     isValid: false,
+    isAccessible: false,
+    isResponsive: false,
+    isHttps: false,
     errors: [],
     warnings: [],
     metadata: {}
@@ -27,7 +30,8 @@ const validateUrl = async (url) => {
     }
 
     // Check SSL certificate
-    if (urlObj.protocol === 'http:') {
+    validation.isHttps = urlObj.protocol === 'https:';
+    if (!validation.isHttps) {
       validation.warnings.push('Website does not use HTTPS - this may cause issues in mobile apps');
     }
 
@@ -45,6 +49,9 @@ const validateUrl = async (url) => {
       return validation;
     }
 
+    // Mark as accessible if we got here
+    validation.isAccessible = true;
+
     // Parse HTML content
     const $ = cheerio.load(response.data);
     
@@ -60,7 +67,8 @@ const validateUrl = async (url) => {
 
     // Check mobile responsiveness
     const viewport = validation.metadata.viewport;
-    if (!viewport || !viewport.includes('width=device-width')) {
+    validation.isResponsive = viewport && viewport.includes('width=device-width');
+    if (!validation.isResponsive) {
       validation.warnings.push('Website may not be mobile-responsive');
     }
 
