@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
-    <title>Rapid SaaS AI Store</title>
-    <script type="text/javascript">
-        // GitHub Pages SPA redirect with infinite loop protection
-        if (!sessionStorage.getItem('spa_redirected')) {
-            sessionStorage.setItem('spa_redirected', 'true');
-            
-            var pathSegmentsToKeep = 1;
-            var l = window.location;
-            l.replace(
-                l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-                l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/index.html' +
-                (l.search ? '&' + l.search.slice(1) : '') +
-                l.hash
-            );
-        }
+    <title>Redirecting...</title>
+    <script>
+      (function() {
+        var redirectTo = window.location.pathname.replace('/rapid-saas-ai-store', '');
+        window.location.replace('/rapid-saas-ai-store/?redirect=' + encodeURIComponent(redirectTo));
+      })();
     </script>
-</head>
-<body>
-    <p>Redirecting...</p>
-</body>
+  </head>
+  <body>
+    Redirecting...
+  </body>
 </html>
