@@ -101,6 +101,16 @@ app.get('/publish.html', (req, res) => {
   }
 });
 
+// Serve dashboard.html specifically
+app.get('/dashboard.html', (req, res) => {
+  const dashboardPath = path.join(__dirname, 'dashboard.html');
+  if (fs.existsSync(dashboardPath)) {
+    res.sendFile(dashboardPath);
+  } else {
+    res.status(404).send('dashboard.html not found');
+  }
+});
+
 // Serve index.html for all non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api/')) {
