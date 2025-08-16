@@ -211,10 +211,11 @@ async function generateSplashScreen(options) {
 
   } catch (error) {
     console.error('Splash screen generation error:', error);
+    const fallbackTheme = options.theme || 'light';
     return {
       success: false,
       error: error.message,
-      fallbackSplash: `https://via.placeholder.com/${options.dimensions?.width || 1080}x${options.dimensions?.height || 1920}/${theme === 'dark' ? '111827' : 'FFFFFF'}/${theme === 'dark' ? 'F9FAFB' : '1F2937'}?text=${encodeURIComponent(options.appName || 'App')}`
+      fallbackSplash: `https://via.placeholder.com/${options.dimensions?.width || 1080}x${options.dimensions?.height || 1920}/${fallbackTheme === 'dark' ? '111827' : 'FFFFFF'}/${fallbackTheme === 'dark' ? 'F9FAFB' : '1F2937'}?text=${encodeURIComponent(options.appName || 'App')}`
     };
   }
 }

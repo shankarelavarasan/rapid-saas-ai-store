@@ -1,4 +1,5 @@
 // Conversion JavaScript for Rapid SaaS AI Store
+// Note: CONFIG object is defined in main.js
 
 // Conversion Configuration
 const CONVERSION_CONFIG = {

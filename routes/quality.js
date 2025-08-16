@@ -238,4 +238,75 @@ router.post('/batch-assess', authenticateToken, async (req, res) => {
   }
 });
 
+// @route   POST /api/quality/scan
+// @desc    Quick quality scan with Lighthouse/HTML checks
+// @access  Public
+router.post('/scan', async (req, res) => {
+  try {
+    const { url } = req.body;
+    
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+
+    // Validate URL format
+    try {
+      new URL(url);
+    } catch (error) {
+      return res.status(400).json({ error: 'Invalid URL format' });
+    }
+
+    // Mock quality scan results
+    const scanResults = {
+      score: Math.floor(Math.random() * 30) + 70, // 70-100 score
+      issues: [
+        {
+          id: 'performance',
+          severity: 'medium',
+          desc: 'Page load time could be improved'
+        },
+        {
+          id: 'accessibility',
+          severity: 'low',
+          desc: 'Some images missing alt text'
+        },
+        {
+          id: 'seo',
+          severity: 'low',
+          desc: 'Meta description could be more descriptive'
+        }
+      ],
+      lighthouse: {
+        performance: Math.floor(Math.random() * 20) + 80,
+        accessibility: Math.floor(Math.random() * 15) + 85,
+        bestPractices: Math.floor(Math.random() * 10) + 90,
+        seo: Math.floor(Math.random() * 25) + 75
+      },
+      htmlChecks: {
+        validHtml: true,
+        hasTitle: true,
+        hasMetaDescription: true,
+        responsiveDesign: true
+      },
+      scannedAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      score: scanResults.score,
+      issues: scanResults.issues,
+      lighthouse: scanResults.lighthouse,
+      htmlChecks: scanResults.htmlChecks,
+      scannedAt: scanResults.scannedAt
+    });
+
+  } catch (error) {
+    console.error('Quality Scan Error:', error);
+    res.status(500).json({ 
+      error: 'Quality scan failed', 
+      message: error.message 
+    });
+  }
+});
+
 export default router;

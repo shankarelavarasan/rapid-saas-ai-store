@@ -24,6 +24,7 @@ import legalRoutes from './routes/legal.js';
 import qualityRoutes from './routes/quality.js';
 import partnershipRoutes from './routes/partnerships.js';
 import globalRoutes from './routes/global.js';
+import proxyRoutes from './routes/proxy.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -68,6 +69,7 @@ app.use('/api/legal', legalRoutes);
 app.use('/api/quality', qualityRoutes);
 app.use('/api/partnerships', partnershipRoutes);
 app.use('/api/global', globalRoutes);
+app.use('/api/proxy', proxyRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -87,6 +89,16 @@ app.get('/health', (req, res) => {
 // Serve static files from both root and public directories
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve publish.html specifically
+app.get('/publish.html', (req, res) => {
+  const publishPath = path.join(__dirname, 'publish.html');
+  if (fs.existsSync(publishPath)) {
+    res.sendFile(publishPath);
+  } else {
+    res.status(404).send('publish.html not found');
+  }
+});
 
 // Serve index.html for all non-API routes
 app.get('*', (req, res) => {

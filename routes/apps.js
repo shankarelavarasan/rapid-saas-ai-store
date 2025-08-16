@@ -100,8 +100,8 @@ router.post('/analyze', async (req, res) => {
 
 // @route   POST /api/apps/generate
 // @desc    Generate mobile app from SaaS URL
-// @access  Private
-router.post('/generate', auth, async (req, res) => {
+// @access  Public
+router.post('/generate', async (req, res) => {
   try {
     const { 
       url, 
@@ -148,7 +148,7 @@ router.post('/generate', auth, async (req, res) => {
 
     // Save app to database
     const appData = {
-      user_id: userId || req.user.id,
+      user_id: userId || (req.user ? req.user.id : 'demo-user'),
       name: appName,
       description: description,
       original_url: url,
@@ -337,12 +337,12 @@ router.delete('/:id', auth, async (req, res) => {
 
 // @route   POST /api/apps/:id/publish
 // @desc    Publish app to stores
-// @access  Private
-router.post('/:id/publish', auth, async (req, res) => {
+// @access  Public
+router.post('/:id/publish', async (req, res) => {
   try {
     const { id } = req.params;
     const { targetStores } = req.body;
-    const userId = req.user.id;
+    const userId = req.user ? req.user.id : 'demo-user';
 
     // This would integrate with actual app store APIs
     // For MVP, we'll simulate the publishing process

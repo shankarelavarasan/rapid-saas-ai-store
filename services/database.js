@@ -25,6 +25,16 @@ if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
 // Create new user
 const createUser = async (userData) => {
   try {
+    // If Supabase is not configured, return mock user data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock user data');
+      return {
+        id: 'demo-user-' + Date.now(),
+        ...userData,
+        created_at: new Date().toISOString()
+      };
+    }
+
     const { data, error } = await supabaseAdmin
       .from('users')
       .insert([userData])
@@ -42,6 +52,16 @@ const createUser = async (userData) => {
 // Get user by email
 const getUserByEmail = async (email) => {
   try {
+    // If Supabase is not configured, return mock user data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock user data');
+      return {
+        id: 'demo-user',
+        email: email,
+        created_at: new Date().toISOString()
+      };
+    }
+
     const { data, error } = await supabaseAdmin
       .from('users')
       .select('*')
@@ -59,6 +79,16 @@ const getUserByEmail = async (email) => {
 // Get user by ID
 const getUserById = async (id) => {
   try {
+    // If Supabase is not configured, return mock user data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock user data');
+      return {
+        id: id,
+        email: 'demo@example.com',
+        created_at: new Date().toISOString()
+      };
+    }
+
     const { data, error } = await supabaseAdmin
       .from('users')
       .select('*')
@@ -98,6 +128,17 @@ const updateUser = async (id, updateData) => {
 // Create new app
 const createApp = async (appData) => {
   try {
+    // If Supabase is not configured, return mock app data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock app data');
+      return {
+        id: 'demo-app-' + Date.now(),
+        ...appData,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+    }
+
     const { data, error } = await supabaseAdmin
       .from('apps')
       .insert([appData])
@@ -124,6 +165,24 @@ const getApps = async (options = {}) => {
       search,
       publicOnly = false
     } = options;
+
+    // If Supabase is not configured, return mock app data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock apps data');
+      return {
+        data: [
+          {
+            id: 'demo-app-1',
+            name: 'Demo App',
+            description: 'A demo application',
+            category: 'productivity',
+            status: 'published',
+            created_at: new Date().toISOString()
+          }
+        ],
+        count: 1
+      };
+    }
 
     let query = supabaseAdmin
       .from('apps')
@@ -387,6 +446,16 @@ const getRevenueData = async (userId, options = {}) => {
 // Upload file to Supabase Storage
 const uploadFile = async (bucket, filePath, fileBuffer, options = {}) => {
   try {
+    // If Supabase is not configured, return mock data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock file upload data');
+      return {
+        path: filePath,
+        fullPath: `${bucket}/${filePath}`,
+        publicUrl: `/assets/mock-${filePath}`
+      };
+    }
+
     const { data, error } = await supabaseAdmin.storage
       .from(bucket)
       .upload(filePath, fileBuffer, {
@@ -416,6 +485,12 @@ const uploadFile = async (bucket, filePath, fileBuffer, options = {}) => {
 // Delete file from Supabase Storage
 const deleteFile = async (bucket, filePath) => {
   try {
+    // If Supabase is not configured, return mock data for development
+    if (!supabaseAdmin) {
+      console.log('Supabase not configured, returning mock file deletion data');
+      return { success: true };
+    }
+
     const { data, error } = await supabaseAdmin.storage
       .from(bucket)
       .remove([filePath]);

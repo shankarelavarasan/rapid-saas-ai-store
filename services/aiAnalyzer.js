@@ -170,6 +170,44 @@ const generateAppAssets = async (options) => {
     iconUrl
   } = options;
 
+  // If OpenAI is not available, return mock data
+  if (!openai) {
+    return {
+      screenshots: [
+        {
+          title: 'Welcome to ' + appName,
+          features: ['User-friendly interface', 'Fast performance'],
+          visualElements: ['App logo', 'Main interface'],
+          callToAction: 'Get started today!'
+        }
+      ],
+      featureGraphic: {
+        headline: appName,
+        subheadline: 'Mobile App',
+        visualElements: ['App icon', 'Modern design'],
+        colorScheme: ['#007AFF', '#FFFFFF'],
+        typography: 'Modern sans-serif'
+      },
+      banners: {
+        playStore: {
+          width: 1024,
+          height: 500,
+          description: 'Feature graphic for Play Store'
+        },
+        appStore: {
+          width: 1200,
+          height: 630,
+          description: 'Feature graphic for App Store'
+        }
+      },
+      promotional: {
+        socialMedia: [],
+        website: {}
+      },
+      generatedAt: new Date().toISOString()
+    };
+  }
+
   try {
     // Generate app store screenshots descriptions
     const screenshotPrompt = `

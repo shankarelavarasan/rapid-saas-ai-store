@@ -74,8 +74,8 @@ router.post('/analyze-website', async (req, res) => {
 
 // @route   POST /api/ai/generate-assets
 // @desc    Generate app assets using AI
-// @access  Private
-router.post('/generate-assets', auth, async (req, res) => {
+// @access  Public
+router.post('/generate-assets', async (req, res) => {
   try {
     const { 
       appName, 
@@ -107,6 +107,7 @@ router.post('/generate-assets', auth, async (req, res) => {
       iconUrl: iconResult.mainIcon,
       colorScheme,
       style,
+      theme: colorScheme === 'dark' ? 'dark' : 'light',
       orientations: ['portrait', 'landscape'],
       devices: ['phone', 'tablet']
     });
@@ -143,7 +144,7 @@ router.post('/generate-assets', auth, async (req, res) => {
           generatedAt: new Date().toISOString(),
           style: style,
           colorScheme: colorScheme,
-          totalAssets: iconResult.allSizes.length + splashResult.portrait.length + splashResult.landscape.length
+          totalAssets: (iconResult.allSizes?.length || 0) + (splashResult.portrait?.length || 0) + (splashResult.landscape?.length || 0)
         }
       }
     });

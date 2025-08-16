@@ -310,4 +310,151 @@ router.post('/check-verification', [
   }
 });
 
+// @route   POST /api/legal/agreements/generate
+// @desc    Generate legal agreement for app owner
+// @access  Public
+router.post('/agreements/generate', [
+  body('ownerId').notEmpty(),
+  body('appUrl').isURL(),
+  body('regions').isArray()
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: errors.array() 
+      });
+    }
+
+    const { ownerId, appUrl, regions } = req.body;
+    
+    // Generate agreement ID
+    const agreementId = `agr_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Mock agreement generation
+    const agreement = {
+      agreementId,
+      ownerId,
+      appUrl,
+      regions,
+      url: `https://legal.rapidstore.ai/agreements/${agreementId}`,
+      expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+      createdAt: new Date().toISOString()
+    };
+
+    res.json({
+      success: true,
+      agreementId: agreement.agreementId,
+      url: agreement.url,
+      expiresAt: agreement.expiresAt
+    });
+
+  } catch (error) {
+    console.error('Agreement Generation Error:', error);
+    res.status(500).json({ 
+      error: 'Failed to generate agreement', 
+      message: error.message 
+    });
+  }
+});
+
+// @route   POST /api/legal/agreements/accept
+// @desc    Accept legal agreement
+// @access  Public
+router.post('/agreements/accept', [
+  body('agreementId').notEmpty(),
+  body('userId').notEmpty(),
+  body('consent').equals('checked')
+], async (req, res) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ 
+        error: 'Validation failed', 
+        details: errors.array() 
+      });
+    }
+
+    const { agreementId, userId, consent } = req.body;
+    
+    // Mock agreement acceptance
+    const acceptance = {
+      agreementId,
+      userId,
+      consent,
+      status: 'accepted',
+      acceptedAt: new Date().toISOString(),
+      ipAddress: req.ip,
+      userAgent: req.get('User-Agent')
+    };
+
+    res.json({
+      success: true,
+      status: 'accepted',
+      acceptedAt: acceptance.acceptedAt
+    });
+
+  } catch (error) {
+    console.error('Agreement Acceptance Error:', error);
+    res.status(500).json({ 
+      error: 'Failed to accept agreement', 
+      message: error.message 
+    });
+  }
+});
+
+// @route   GET /api/legal/policies/by-region
+// @desc    Get region-specific policies
+// @access  Public
+router.get('/policies/by-region', async (req, res) => {
+  try {
+    const { code } = req.query;
+    
+    if (!code) {
+      return res.status(400).json({ error: 'Region code is required' });
+    }
+
+    // Mock region policies
+    const policies = {
+      IN: {
+        dataLocalization: true,
+        gstRequired: true,
+        privacyPolicy: 'https://legal.rapidstore.ai/privacy/in',
+        termsOfService: 'https://legal.rapidstore.ai/terms/in'
+      },
+      US: {
+        dataLocalization: false,
+        coppaCompliance: true,
+        privacyPolicy: 'https://legal.rapidstore.ai/privacy/us',
+        termsOfService: 'https://legal.rapidstore.ai/terms/us'
+      },
+      EU: {
+        gdprCompliance: true,
+        dataLocalization: true,
+        privacyPolicy: 'https://legal.rapidstore.ai/privacy/eu',
+        termsOfService: 'https://legal.rapidstore.ai/terms/eu'
+      }
+    };
+
+    const regionPolicy = policies[code.toUpperCase()];
+    if (!regionPolicy) {
+      return res.status(404).json({ error: 'Region policy not found' });
+    }
+
+    res.json({
+      success: true,
+      region: code.toUpperCase(),
+      policies: regionPolicy
+    });
+
+  } catch (error) {
+    console.error('Policy Retrieval Error:', error);
+    res.status(500).json({ 
+      error: 'Failed to retrieve policies', 
+      message: error.message 
+    });
+  }
+});
+
 export default router;
