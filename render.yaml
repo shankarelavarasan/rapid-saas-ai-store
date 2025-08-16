@@ -5,9 +5,7 @@ services:
     plan: free
     buildCommand: |
       npm install
-      mkdir -p public
-      cp -r public/* public/ || echo 'Public directory already exists'
-      echo 'Build completed - static files ready'
+      npm run build
     startCommand: npm start
     healthCheckPath: /
     envVars:
