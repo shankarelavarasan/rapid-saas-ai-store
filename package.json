@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
+    "start:minimal": "node server-minimal.js",
     "dev": "nodemon server.js",
     "server": "nodemon server.js",
     "build": "node scripts/make-public.js && node scripts/move-public-to-root.js",

@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: rapid-saas-ai-store-minimal
+    env: node
+    plan: free
+    buildCommand: |
+      npm install
+      npm run build
+    startCommand: npm run start:minimal
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: rapid-saas-ai-store-minimal
+          property: port
+    autoDeploy: false
+    branch: main
+    rootDir: .
+    region: oregon
+    scaling:
+      minInstances: 0
+      maxInstances: 1
+    disk:
+      name: rapid-saas-ai-store-disk
+      size: 1GB
+      mountPath: /opt/render/project/src/uploads
