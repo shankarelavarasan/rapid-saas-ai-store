@@ -4,7 +4,7 @@
 const CONFIG = {
   API_BASE_URL: window.location.hostname === 'localhost' 
     ? 'http://localhost:3000/api' 
-    : 'https://your-render-backend.onrender.com/api',
+    : 'https://rapid-saas-ai-store-1.onrender.com/api',
   DEMO_VIDEO_URL: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
   ANIMATION_DURATION: 300
 };

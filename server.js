@@ -46,7 +46,8 @@ app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? [
         'https://shankarelavarasan.github.io',
-        'https://rapid-saas-ai-store.onrender.com'
+        'https://rapid-saas-ai-store.onrender.com',
+        'https://rapid-saas-ai-store-1.onrender.com'
       ] 
     : ['http://localhost:3000'],
   credentials: true
@@ -135,9 +136,10 @@ app.use('*', (req, res) => {
 
 // Start server only if not in test mode
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Rapid SaaS AI Store server running on port ${PORT}`);
     console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Listening on 0.0.0.0:${PORT}`);
     console.log('📱 Ready to convert SaaS to mobile apps!');
   });
 }

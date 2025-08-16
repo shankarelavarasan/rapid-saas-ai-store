@@ -1,0 +1,25 @@
+[Unit]
+Description=Rapid SaaS AI Store - Node.js App
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/var/www/app
+Environment=NODE_ENV=production
+Environment=PORT=3000
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGINT
+TimeoutStopSec=5
+SyslogIdentifier=node-app
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/var/www/app
+
+[Install]
+WantedBy=multi-user.target

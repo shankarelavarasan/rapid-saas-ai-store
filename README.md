@@ -98,51 +98,78 @@
 
 ## 🌐 Deployment
 
-### Deploy to Render
+### Quick Deploy Options
 
-1. **One-Click Deploy**
-   
-   Click the "Deploy to Render" button above or manually:
-   
-   - Fork this repository
-   - Connect your GitHub account to Render
-   - Create a new Web Service
-   - Connect your forked repository
-   - Render will automatically detect the `render.yaml` configuration
+**🚀 Render (Recommended)**
+- Build Command: `npm ci && npm run build`
+- Start Command: `npm run start:prod`
+- Health Check: `/health`
+- Auto-deploy: ON
 
-2. **Environment Variables**
-   
-   Set the following environment variables in your Render dashboard:
-   - `SUPABASE_URL`
-   - `SUPABASE_ANON_KEY`
-   - `SUPABASE_SERVICE_ROLE_KEY`
-   - `OPENAI_API_KEY`
-   - `GEMINI_API_KEY`
-   - `CLOUDINARY_CLOUD_NAME`
-   - `CLOUDINARY_API_KEY`
-   - `CLOUDINARY_API_SECRET`
-   - `JWT_SECRET`
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_PUBLISHABLE_KEY`
+**🚄 Railway**
+- Start Command: `npm run start:prod`
+- Port: Auto-detected
+- Auto-deploy on git push
 
-### Deploy with Docker
+**✈️ Fly.io**
+```bash
+fly launch  # Set internal port: 3000
+fly deploy
+```
 
-1. **Build the Docker image**
-   ```bash
-   docker build -t rapid-saas-ai-store .
-   ```
+**📋 Environment Variables (All Platforms)**
+Set these in your platform's dashboard:
+- `NODE_ENV=production`
+- `PORT=` (platform-specific)
+- `DATABASE_URL=postgresql://...`
+- `OPENAI_API_KEY=sk-...`
+- `ANTHROPIC_API_KEY=sk-ant-...`
+- `GEMINI_API_KEY=...`
+- `SUPABASE_URL=...`
+- `SUPABASE_ANON_KEY=...`
+- `CLOUDINARY_CLOUD_NAME=...`
+- `JWT_SECRET=...`
+- `STRIPE_SECRET_KEY=...`
 
-2. **Run the container**
-   ```bash
-   docker run -p 3000:3000 --env-file .env rapid-saas-ai-store
-   ```
+📖 **[Complete Deployment Guide](./DEPLOYMENT_GUIDE.md)** - VPS, PM2, systemd, Nginx, and more!
 
 ### Deploy to Other Platforms
 
-- **Heroku**: Use the included `Dockerfile`
-- **Railway**: Connect your GitHub repository
-- **DigitalOcean App Platform**: Use the `render.yaml` as reference
-- **AWS/GCP/Azure**: Deploy using Docker or Node.js runtime
+#### Heroku
+1. Install Heroku CLI
+2. Login and create app:
+   ```bash
+   heroku login
+   heroku create your-app-name
+   ```
+3. Set environment variables:
+   ```bash
+   heroku config:set NODE_ENV=production
+   heroku config:set PORT=
+   heroku config:set SUPABASE_URL=your_value
+   # ... add all other environment variables
+   ```
+4. Deploy:
+   ```bash
+   git push heroku main
+   ```
+
+#### Railway
+1. Connect your GitHub repository
+2. Set environment variables in Railway dashboard
+3. Railway will auto-deploy on git push
+
+#### DigitalOcean App Platform
+1. Use the `render.yaml` as reference for app spec
+2. Connect GitHub repository
+3. Configure environment variables
+4. Deploy with Node.js runtime
+
+#### AWS/GCP/Azure
+- Deploy using Node.js runtime (18+)
+- Set up environment variables
+- Configure health check endpoint: `/health`
+- Use `npm start` as start command
 
 ## 📁 Project Structure
 
@@ -170,7 +197,6 @@ rapid-saas-ai-store/
 ├── server.js             # Main server file
 ├── package.json          # Dependencies and scripts
 ├── render.yaml           # Render deployment config
-├── Dockerfile            # Docker configuration
 └── README.md             # This file
 ```
 

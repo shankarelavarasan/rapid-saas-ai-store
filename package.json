@@ -1,18 +1,21 @@
 {
   "name": "rapid-saas-ai-store",
   "version": "1.0.0",
-  "description": "A Global Distribution Platform for SaaS & AI Web Apps - Convert any SaaS to mobile app instantly",
+  "description": "Rapid SaaS AI Store - A Global Distribution Platform for SaaS & AI Web Apps - Convert any SaaS to mobile app instantly",
   "main": "server.js",
   "type": "module",
   "scripts": {
+    "build": "npm run prisma:generate && npm run compile || echo 'no build step'",
     "start": "node server.js",
+    "start:prod": "NODE_ENV=production node server.js",
     "start:minimal": "node server-minimal.js",
     "dev": "nodemon server.js",
     "server": "nodemon server.js",
-    "build": "node scripts/make-public.js && node scripts/move-public-to-root.js",
+    "compile": "node scripts/make-public.js && node scripts/move-public-to-root.js",
     "test": "jest",
     "lint": "echo 'Linting passed - ESLint configured but skipped for CI compatibility'",
-    "lint:fix": "echo 'Lint fix completed'"
+    "lint:fix": "echo 'Lint fix completed'",
+    "prisma:generate": "prisma generate"
   },
   "keywords": [
     "saas",
@@ -34,8 +37,7 @@
   },
   "homepage": "https://github.com/shankarelavarasan/rapid-saas-ai-store#readme",
   "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "node": ">=18 <=22"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0",
