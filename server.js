@@ -29,6 +29,11 @@ import proxyRoutes from './routes/proxy.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy for production (Render, Heroku, etc.)
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Security middleware
 app.use(helmet());
 app.use(compression());
