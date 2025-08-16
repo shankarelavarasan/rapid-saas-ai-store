@@ -121,12 +121,21 @@ const generateAppAssets = async (options) => {
 
   try {
     let browser;
+    let puppeteerAvailable = true;
     
     try {
       // Launch Puppeteer for screenshots
       browser = await puppeteer.launch({
         headless: 'new',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        args: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-dev-shm-usage',
+          '--disable-gpu',
+          '--no-first-run',
+          '--no-zygote',
+          '--single-process'
+        ]
       });
 
       const page = await browser.newPage();
@@ -163,7 +172,7 @@ const generateAppAssets = async (options) => {
       }
 
       // Generate favicon if not provided
-      if (!customIcon) {
+      if (!customIcon && puppeteerAvailable) {
         await page.setViewport({ width: 512, height: 512 });
         
         // Try to find and capture the website's favicon or logo
@@ -194,6 +203,77 @@ const generateAppAssets = async (options) => {
         }
       }
 
+    } catch (puppeteerError) {
+      console.warn('Puppeteer not available, using fallback methods:', puppeteerError.message);
+      puppeteerAvailable = false;
+      
+      // Generate placeholder screenshots when Puppeteer fails
+      const devices = [
+        { name: 'mobile', width: 375, height: 667 },
+        { name: 'tablet', width: 768, height: 1024 },
+        { name: 'desktop', width: 1920, height: 1080 }
+      ];
+
+      for (const device of devices) {
+        // Create placeholder screenshot
+        const placeholderSvg = `
+          <svg width="${device.width}" height="${device.height}" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="#f3f4f6"/>
+            <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" 
+                  font-family="Arial, sans-serif" font-size="24" fill="#6b7280">
+              ${appName} - ${device.name.charAt(0).toUpperCase() + device.name.slice(1)} View
+            </text>
+          </svg>
+        `;
+
+        const placeholderBuffer = Buffer.from(placeholderSvg);
+        const placeholderPng = await sharp(placeholderBuffer)
+          .png()
+          .toBuffer();
+
+        const screenshotPath = `screenshots/${Date.now()}-${device.name}-placeholder.png`;
+        const uploadResult = await uploadFile('app-assets', screenshotPath, placeholderPng, {
+          contentType: 'image/png'
+        });
+
+        assets.screenshots.push({
+          device: device.name,
+          width: device.width,
+          height: device.height,
+          url: uploadResult.publicUrl,
+          path: uploadResult.path,
+          placeholder: true
+        });
+       }
+       
+       // Generate fallback icon when Puppeteer is not available
+       if (!customIcon && !puppeteerAvailable) {
+         const initial = appName.charAt(0).toUpperCase();
+         const colors = ['#4F46E5', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#06B6D4'];
+         const backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+         
+         const fallbackIconSvg = `
+           <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+             <rect width="512" height="512" fill="${backgroundColor}" rx="76.8"/>
+             <text x="50%" y="50%" font-family="Arial, sans-serif" font-size="204" 
+                   font-weight="bold" fill="white" text-anchor="middle" dy="0.35em">
+               ${initial}
+             </text>
+           </svg>
+         `;
+
+         const fallbackIconBuffer = Buffer.from(fallbackIconSvg);
+         const fallbackIconPng = await sharp(fallbackIconBuffer)
+           .png()
+           .toBuffer();
+
+         const iconPath = `icons/${Date.now()}-fallback-icon.png`;
+         const iconUpload = await uploadFile('app-assets', iconPath, fallbackIconPng, {
+           contentType: 'image/png'
+         });
+
+         assets.icons.main = iconUpload.publicUrl;
+       }
     } finally {
       if (browser) {
         await browser.close();

@@ -78,22 +78,52 @@ Focus on:
 5. App store optimization
 `;
 
-    // Call OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert mobile app developer and UX analyst. Analyze websites for mobile app conversion potential and provide detailed, actionable insights.'
-        },
-        {
-          role: 'user',
-          content: prompt
-        }
-      ],
-      temperature: 0.3,
-      max_tokens: 1500
-    });
+    // Call OpenAI API with error handling
+    let completion;
+    try {
+      if (!openai) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert mobile app developer and UX analyst. Analyze websites for mobile app conversion potential and provide detailed, actionable insights.'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.3,
+        max_tokens: 1500
+      });
+    } catch (apiError) {
+      console.error('OpenAI API Error:', apiError.message);
+      
+      // Return fallback analysis when API fails
+      return {
+        contentType: 'saas',
+        category: 'productivity',
+        appViability: 7,
+        viabilityReasons: ['Website appears suitable for mobile app conversion'],
+        isMobileResponsive: true,
+        suggestedAppName: metadata.title || 'Mobile App',
+        suggestedDescription: metadata.description || 'Mobile application for enhanced user experience',
+        suggestedCategory: 'Productivity',
+        suggestedTags: ['mobile', 'app', 'productivity'],
+        features: ['Web browsing', 'Mobile optimization'],
+        targetAudience: 'General users',
+        recommendations: ['Optimize for mobile devices', 'Add offline capabilities'],
+        technologies: ['web'],
+        framework: 'unknown',
+        metadata,
+        fallback: true,
+        error: apiError.message
+      };
+    }
 
     let analysis;
     try {
@@ -234,21 +264,45 @@ Format as JSON array:
 ]
 `;
 
-    const screenshotCompletion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
+    let screenshotCompletion;
+    try {
+      if (!openai) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      screenshotCompletion = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert app store optimization specialist. Create compelling screenshot descriptions that maximize conversion rates.'
+          },
+          {
+            role: 'user',
+            content: screenshotPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      });
+    } catch (apiError) {
+      console.error('OpenAI Screenshot Analysis Error:', apiError.message);
+      // Return fallback screenshots
+      return [
         {
-          role: 'system',
-          content: 'You are an expert app store optimization specialist. Create compelling screenshot descriptions that maximize conversion rates.'
+          title: 'Welcome to ' + appName,
+          features: ['Easy to use', 'Fast performance'],
+          visualElements: ['Clean interface', 'Modern design'],
+          callToAction: 'Get Started'
         },
         {
-          role: 'user',
-          content: screenshotPrompt
+          title: 'Key Features',
+          features: ['Feature 1', 'Feature 2'],
+          visualElements: ['Feature showcase'],
+          callToAction: 'Learn More'
         }
-      ],
-      temperature: 0.7,
-      max_tokens: 1000
-    });
+      ];
+    }
 
     let screenshots;
     try {
@@ -282,8 +336,14 @@ Provide:
 Format as JSON.
 `;
 
-    const featureCompletion = await openai.chat.completions.create({
-      model: 'gpt-4',
+    let featureCompletion;
+    try {
+      if (!openai) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      featureCompletion = await openai.chat.completions.create({
+        model: 'gpt-4',
       messages: [
         {
           role: 'system',
@@ -297,6 +357,34 @@ Format as JSON.
       temperature: 0.6,
       max_tokens: 500
     });
+    } catch (apiError) {
+      console.error('OpenAI Feature Analysis Error:', apiError.message);
+      // Return fallback feature graphic
+      return {
+        screenshots: [
+          {
+            title: 'Welcome to ' + appName,
+            features: ['Easy to use', 'Fast performance'],
+            visualElements: ['Clean interface', 'Modern design'],
+            callToAction: 'Get Started'
+          }
+        ],
+        featureGraphic: {
+          headline: appName,
+          subheadline: 'Mobile App',
+          visualElements: ['App icon', 'Modern design'],
+          colorScheme: ['#007AFF', '#FFFFFF'],
+          typography: 'Modern sans-serif'
+        },
+        banners: {
+          playStore: {
+            width: 1024,
+            height: 500,
+            elements: ['App name', 'Key features']
+          }
+        }
+      };
+    }
 
     let featureGraphic;
     try {
@@ -400,21 +488,47 @@ Provide categorization in JSON format:
 Use standard app store categories.
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an app store categorization expert. Provide accurate categorization for optimal app store placement and discoverability.'
-        },
-        {
-          role: 'user',
-          content: categorizationPrompt
-        }
-      ],
-      temperature: 0.2,
-      max_tokens: 800
-    });
+    let completion;
+    try {
+      if (!openai) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an app store categorization expert. Provide accurate categorization for optimal app store placement and discoverability.'
+          },
+          {
+            role: 'user',
+            content: categorizationPrompt
+          }
+        ],
+        temperature: 0.2,
+        max_tokens: 800
+      });
+    } catch (apiError) {
+      console.error('OpenAI Categorization Error:', apiError.message);
+      // Return fallback categorization
+      return {
+        primaryCategory: 'Utilities',
+        primaryConfidence: 0.7,
+        primaryReasoning: 'Fallback categorization - API unavailable',
+        secondaryCategories: ['Productivity'],
+        playStoreCategory: 'Tools',
+        appStoreCategory: 'Utilities',
+        suggestedTags: ['mobile', 'app', 'utility'],
+        targetAudience: 'General users',
+        ageGroup: '18-65',
+        demographics: 'General population',
+        contentRating: 'Everyone',
+        ageRating: '4+',
+        fallback: true,
+        error: apiError.message
+      };
+    }
 
     let categorization;
     try {
@@ -505,21 +619,44 @@ Generate descriptions in JSON format:
 Make descriptions compelling, clear, and conversion-focused.
 `;
 
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-4',
-      messages: [
-        {
-          role: 'system',
-          content: 'You are an expert copywriter specializing in app store optimization and conversion-focused descriptions.'
-        },
-        {
-          role: 'user',
-          content: descriptionPrompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 1500
-    });
+    let completion;
+    try {
+      if (!openai) {
+        throw new Error('OpenAI API key not configured');
+      }
+      
+      completion = await openai.chat.completions.create({
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an expert copywriter specializing in app store optimization and conversion-focused descriptions.'
+          },
+          {
+            role: 'user',
+            content: descriptionPrompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1500
+      });
+    } catch (apiError) {
+      console.error('OpenAI Description Generation Error:', apiError.message);
+      // Return fallback descriptions
+      return {
+        short: appName + ' - Mobile App',
+        medium: appName + ' - Enhanced mobile experience for better productivity',
+        long: `${appName} brings you a seamless mobile experience with intuitive design and powerful features. Perfect for users who want convenience and efficiency on the go.`,
+        playStore: `Download ${appName} for Android and enjoy enhanced mobile functionality.`,
+        appStore: `Get ${appName} on iOS for the ultimate mobile experience.`,
+        promotional: `Transform your mobile experience with ${appName} - now available for download.`,
+        extractedKeywords: ['mobile', 'app', appName.toLowerCase()],
+        readabilityScore: 8,
+        sentimentScore: 8,
+        fallback: true,
+        error: apiError.message
+      };
+    }
 
     let descriptions;
     try {
