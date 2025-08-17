@@ -760,6 +760,7 @@ async function animateProgress(targetProgress, duration) {
   const startTime = Date.now();
     
   return new Promise(resolve => {
+    let lastLogTime = 0;
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
@@ -769,6 +770,13 @@ async function animateProgress(targetProgress, duration) {
             
       progressFill.style.width = `${currentProgress}%`;
       progressText.textContent = `${Math.round(currentProgress)}%`;
+      
+      // Throttle console logging to reduce spam
+      const now = Date.now();
+      if (now - lastLogTime > 500) { // Log every 500ms max
+        console.log(`Progress: ${Math.round(currentProgress)}%`);
+        lastLogTime = now;
+      }
             
       if (progress < 1) {
         requestAnimationFrame(updateProgress);

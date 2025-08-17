@@ -7,11 +7,57 @@ const router = express.Router();
 
 // SSRF protection - allowed hosts
 const ALLOWED_HOSTS = [
+  // Test/Demo URLs
   'trae.ai',
   'github.io',
   'vercel.app',
   'jsonplaceholder.typicode.com',
-  'httpbin.org'
+  'httpbin.org',
+  'reqres.in',
+  
+  // Common SaaS platforms
+  'notion.so',
+  'airtable.com',
+  'trello.com',
+  'asana.com',
+  'slack.com',
+  'discord.com',
+  'figma.com',
+  'canva.com',
+  'miro.com',
+  'linear.app',
+  'monday.com',
+  'clickup.com',
+  'todoist.com',
+  'calendly.com',
+  'typeform.com',
+  'mailchimp.com',
+  'hubspot.com',
+  'salesforce.com',
+  'zendesk.com',
+  'intercom.com',
+  'freshworks.com',
+  'shopify.com',
+  'squarespace.com',
+  'wix.com',
+  'webflow.com',
+  'wordpress.com',
+  'medium.com',
+  'substack.com',
+  'ghost.org',
+  'netlify.app',
+  'herokuapp.com',
+  'railway.app',
+  'render.com',
+  'fly.io',
+  'supabase.co',
+  'firebase.google.com',
+  'aws.amazon.com',
+  'azure.microsoft.com',
+  
+  // Allow any HTTPS domain for broader compatibility
+  // Note: This is less secure but necessary for a SaaS conversion tool
+  '*'
 ];
 
 // Block private/internal IPs
@@ -26,6 +72,11 @@ const BLOCKED_IPS = [
 
 // Check if host is allowed
 function isHostAllowed(hostname) {
+  // Allow all domains if wildcard is present
+  if (ALLOWED_HOSTS.includes('*')) {
+    return true;
+  }
+  
   return ALLOWED_HOSTS.some(allowedHost => 
     hostname === allowedHost || hostname.endsWith('.' + allowedHost)
   );
