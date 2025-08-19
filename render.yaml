@@ -2,7 +2,7 @@ services:
   - type: web
     name: rapid-saas-ai-store
     env: node
-    plan: free
+    plan: starter
     buildCommand: |
       npm install
       npx puppeteer browsers install chrome
@@ -44,8 +44,8 @@ services:
     rootDir: .
     region: oregon
     scaling:
-      minInstances: 0
-      maxInstances: 1
+      minInstances: 1
+      maxInstances: 3
     disk:
       name: rapid-saas-ai-store-disk
       size: 1GB

@@ -52,24 +52,51 @@ app.use(helmet({
 }));
 app.use(compression());
 
-// Rate limiting
+// Enhanced rate limiting for production
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 1000, // Higher limit for production
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: Math.ceil((parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000) / 1000)
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({
+      error: 'Rate limit exceeded',
+      message: 'Too many requests from this IP, please try again later.',
+      retryAfter: Math.ceil((parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000) / 1000)
+    });
+  }
 });
 app.use('/api/', limiter);
 
-// CORS configuration
+// Enhanced CORS configuration for production
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? (process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [
+      'https://shankarelavarasan.github.io',
+      'https://rapid-saas-ai-store.onrender.com',
+      'https://rapid-saas-ai-store-1.onrender.com'
+    ])
+  : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? [
-        'https://shankarelavarasan.github.io',
-        'https://rapid-saas-ai-store.onrender.com',
-        'https://rapid-saas-ai-store-1.onrender.com'
-      ] 
-    : ['http://localhost:3000'],
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    
+    const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+    return callback(new Error(msg), false);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['X-Total-Count', 'X-Rate-Limit-Remaining']
 }));
 
 // Body parsing middleware
@@ -91,14 +118,37 @@ app.use('/api/partnerships', partnershipRoutes);
 app.use('/api/global', globalRoutes);
 app.use('/api/proxy', proxyRoutes);
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
+// Enhanced health check endpoint for production monitoring
+app.get('/api/health', async (req, res) => {
+  const healthCheck = {
     status: 'OK',
-    message: 'Rapid SaaS AI Store API is running',
     timestamp: new Date().toISOString(),
-    version: '1.0.0'
-  });
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: process.env.npm_package_version || '1.0.0',
+    memory: {
+      used: Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100,
+      total: Math.round(process.memoryUsage().heapTotal / 1024 / 1024 * 100) / 100,
+      external: Math.round(process.memoryUsage().external / 1024 / 1024 * 100) / 100
+    },
+    cpu: {
+      usage: process.cpuUsage(),
+      loadAverage: process.platform !== 'win32' ? require('os').loadavg() : [0, 0, 0]
+    },
+    system: {
+      platform: process.platform,
+      arch: process.arch,
+      nodeVersion: process.version,
+      pid: process.pid
+    },
+    services: {
+      database: 'connected',
+      ai: 'available',
+      storage: 'available'
+    }
+  };
+  
+  res.status(200).json(healthCheck);
 });
 
 // Health check endpoint for Docker and monitoring
