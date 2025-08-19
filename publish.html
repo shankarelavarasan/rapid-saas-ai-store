@@ -68,7 +68,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary" onclick="setupGooglePlayConsole()" id="playstore-btn">Setup & Publish</button>
+                                <button class="btn btn-primary" onclick="currentSession ? publishAuthorizedApp() : setupGooglePlayConsole()" id="playstore-btn">Setup & Publish</button>
                             </div>
 
                             <div class="store-option">
@@ -87,21 +87,39 @@
                                 <button class="btn btn-primary" onclick="publishToAppStore()">Publish to App Store</button>
                             </div>
 
-                            <div class="credentials-section" id="credentials-section" style="display: none;">
-                                <h3>🔐 Google Play Console Setup</h3>
-                                <p>Connect your Google Play Console account for automated publishing</p>
-                                <div class="credentials-form">
-                                    <div class="form-group">
-                                        <label for="service-account-key">Service Account Key (JSON)</label>
-                                        <textarea id="service-account-key" placeholder="Paste your Google Play Console service account JSON key here..." rows="6"></textarea>
+                            <div class="authorization-section" id="authorizationSection" style="display: none;">
+                                <h3>Authorize Google Play Developer Account</h3>
+                                <p>Connect your official Google Play Developer account to publish apps directly to your Play Console.</p>
+                                
+                                <div class="authorization-info">
+                                    <div class="security-badge">
+                                        <span class="badge-icon">🔒</span>
+                                        <div class="badge-content">
+                                            <strong>Secure OAuth Authorization</strong>
+                                            <p>We never see your passwords. Google handles all authentication securely.</p>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="package-name">Package Name</label>
-                                        <input type="text" id="package-name" placeholder="com.yourcompany.appname" value="com.rapidtech.generatedapp">
+                                    
+                                    <div class="requirements">
+                                        <h4>Requirements:</h4>
+                                        <ul>
+                                            <li>Active Google Play Developer account</li>
+                                            <li>Published at least one app (or have publishing permissions)</li>
+                                            <li>Account in good standing</li>
+                                        </ul>
                                     </div>
+                                </div>
+                                
+                                <div class="authorization-form">
+                                    <div class="form-group">
+                                        <label for="packageName">Package Name:</label>
+                                        <input type="text" id="packageName" placeholder="com.yourcompany.appname" />
+                                        <small>This will be your app's unique identifier on Google Play</small>
+                                    </div>
+                                    
                                     <div class="form-actions">
-                                        <button class="btn btn-primary" onclick="validateAndPublish()">Validate & Publish</button>
-                                        <button class="btn btn-secondary" onclick="hideCredentialsForm()">Cancel</button>
+                                        <button onclick="authorizeGooglePlay()" class="btn-primary">Authorize with Google Play</button>
+                                        <button onclick="hideAuthorizationForm()" class="btn-secondary">Cancel</button>
                                     </div>
                                 </div>
                             </div>
@@ -136,77 +154,146 @@
         document.getElementById('app-description').textContent = appData.description;
         document.getElementById('app-icon').src = appData.icon;
 
+        // Store session information
+        let currentSession = null;
+        
         function setupGooglePlayConsole() {
-            document.getElementById('credentials-section').style.display = 'block';
-            document.getElementById('playstore-btn').textContent = 'Setup in Progress...';
-            document.getElementById('playstore-btn').disabled = true;
+            const section = document.getElementById('authorizationSection');
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+            
+            // Check if we're returning from OAuth authorization
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('authorized') === 'true') {
+                const sessionId = urlParams.get('session');
+                if (sessionId) {
+                    currentSession = sessionId;
+                    showNotification('✅ Authorization successful! You can now publish apps.', 'success');
+                    // Clean up URL
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                }
+            } else if (urlParams.get('error') === 'authorization_failed') {
+                showNotification('❌ Authorization failed. Please try again.', 'error');
+                // Clean up URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
         }
 
-        function hideCredentialsForm() {
-            document.getElementById('credentials-section').style.display = 'none';
-            document.getElementById('playstore-btn').textContent = 'Setup & Publish';
-            document.getElementById('playstore-btn').disabled = false;
+        function hideAuthorizationForm() {
+            const section = document.getElementById('authorizationSection');
+            section.style.display = 'none';
         }
 
-        async function validateAndPublish() {
-            const serviceAccountKey = document.getElementById('service-account-key').value;
-            const packageName = document.getElementById('package-name').value;
+        async function authorizeGooglePlay() {
+            const packageName = document.getElementById('packageName').value.trim();
 
-            if (!serviceAccountKey.trim()) {
-                showNotification('Please provide your Google Play Console service account key', 'error');
+            if (!packageName) {
+                showNotification('Please provide a package name', 'error');
                 return;
             }
 
-            if (!packageName.trim()) {
-                showNotification('Please provide a valid package name', 'error');
+            // Validate package name format
+            const packageNameRegex = /^[a-z][a-z0-9_]*(\.[a-z][a-z0-9_]*)+$/;
+            if (!packageNameRegex.test(packageName)) {
+                showNotification('Invalid package name format. Use format: com.yourcompany.appname', 'error');
                 return;
             }
 
             try {
-                // Validate credentials first
-                showNotification('Validating Google Play Console credentials...', 'info');
-                
-                const validateResponse = await fetch('/api/publishing/validate-credentials', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        serviceAccountKey: JSON.parse(serviceAccountKey),
-                        packageName 
-                    })
-                });
+                showNotification('Initiating Google Play authorization...', 'info');
 
-                if (!validateResponse.ok) {
-                    throw new Error('Invalid credentials or package name');
+                // Get authorization URL
+                const response = await fetch('/api/publishing/authorize');
+                const result = await response.json();
+
+                if (!result.success) {
+                    showNotification(`Authorization failed: ${result.error}`, 'error');
+                    return;
                 }
 
-                showNotification('Credentials validated! Publishing app...', 'success');
+                // Store package name for later use
+                sessionStorage.setItem('pendingPackageName', packageName);
+                
+                // Redirect to Google OAuth
+                showNotification('Redirecting to Google for authorization...', 'info');
+                window.location.href = result.authorizationUrl;
+
+            } catch (error) {
+                console.error('Authorization error:', error);
+                showNotification('An error occurred during authorization. Please try again.', 'error');
+            }
+        }
+
+        async function publishAuthorizedApp() {
+            if (!currentSession) {
+                showNotification('Please authorize your Google Play account first', 'error');
+                setupGooglePlayConsole();
+                return;
+            }
+
+            const packageName = sessionStorage.getItem('pendingPackageName') || document.getElementById('packageName').value.trim();
+            
+            if (!packageName) {
+                showNotification('Package name is required', 'error');
+                return;
+            }
+
+            try {
+                showNotification('Publishing app to your Google Play Console...', 'info');
+
+                // Get app data from the current session
+                const appData = {
+                    appName: document.getElementById('app-name').textContent,
+                    description: document.getElementById('app-description').textContent,
+                    iconUrl: document.getElementById('app-icon').src
+                };
 
                 // Publish the app
-                const publishResponse = await fetch('/api/publishing/publish-app', {
+                const publishResponse = await fetch('/api/publishing/publish', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        appId: appId,
-                        serviceAccountKey: JSON.parse(serviceAccountKey),
-                        packageName,
-                        appName: appData.name
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: currentSession,
+                        packageName: packageName,
+                        appName: appData.appName,
+                        appDescription: appData.description,
+                        iconUrl: appData.iconUrl
                     })
                 });
 
-                const result = await publishResponse.json();
+                const publishResult = await publishResponse.json();
 
-                if (publishResponse.ok) {
-                    showNotification('🎉 App successfully published to Google Play Console!', 'success');
-                    hideCredentialsForm();
-                    document.getElementById('playstore-btn').textContent = '✅ Published';
-                    document.getElementById('playstore-btn').style.background = '#4CAF50';
+                if (publishResult.success) {
+                    showNotification('🎉 App published successfully to your Google Play Console!', 'success');
+                    hideAuthorizationForm();
+                    
+                    // Update UI to show success state
+                    const publishBtn = document.getElementById('playstore-btn');
+                    publishBtn.textContent = '✅ Published to Play Store';
+                    publishBtn.disabled = true;
+                    publishBtn.style.backgroundColor = '#4CAF50';
+                    
+                    // Show developer console link if available
+                    if (publishResult.developerConsoleUrl) {
+                        showNotification(`View in your Play Console: ${publishResult.developerConsoleUrl}`, 'info');
+                    }
+                    
+                    // Clean up
+                    sessionStorage.removeItem('pendingPackageName');
                 } else {
-                    throw new Error(result.error || 'Publishing failed');
+                    showNotification(`Publishing failed: ${publishResult.error}`, 'error');
+                    
+                    // If session expired, clear it
+                    if (publishResult.error.includes('session') || publishResult.error.includes('expired')) {
+                        currentSession = null;
+                    }
                 }
 
             } catch (error) {
                 console.error('Publishing error:', error);
-                showNotification('Publishing failed: ' + error.message, 'error');
+                showNotification('An error occurred during publishing. Please try again.', 'error');
             }
         }
 
@@ -340,7 +427,7 @@
             padding-left: 1.5rem;
         }
 
-        .credentials-section {
+        .authorization-section {
             background: #f8fafc;
             border-radius: 12px;
             padding: 2rem;
@@ -348,7 +435,61 @@
             border: 2px solid #e2e8f0;
         }
 
-        .credentials-form {
+        .authorization-info {
+            margin-bottom: 2rem;
+        }
+
+        .security-badge {
+            display: flex;
+            align-items: center;
+            background: #e8f5e8;
+            border: 1px solid #c3e6c3;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge-icon {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .badge-content strong {
+            color: #2d5a2d;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .badge-content p {
+            color: #4a6b4a;
+            margin: 0;
+            font-size: 0.875rem;
+        }
+
+        .requirements {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .requirements h4 {
+            margin: 0 0 0.75rem 0;
+            color: #374151;
+            font-size: 1rem;
+        }
+
+        .requirements ul {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        .requirements li {
+            margin-bottom: 0.25rem;
+            color: #6b7280;
+        }
+
+        .authorization-form {
             max-width: 600px;
             margin: 0 auto;
         }
@@ -381,6 +522,13 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
 
+        .form-group small {
+            display: block;
+            margin-top: 0.25rem;
+            color: #6b7280;
+            font-size: 0.75rem;
+        }
+
         .form-actions {
             display: flex;
             gap: 1rem;
@@ -404,8 +552,18 @@
                 flex-direction: column;
             }
 
-            .credentials-section {
-                padding: 1.5rem;
+            .authorization-section {
+                padding: 15px;
+            }
+
+            .security-badge {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .badge-icon {
+                margin-right: 0;
+                margin-bottom: 8px;
             }
 
             .app-info {

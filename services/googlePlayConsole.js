@@ -1,67 +1,149 @@
 import { google } from 'googleapis';
-import fs from 'fs/promises';
+import fs from 'fs';
 import path from 'path';
 
 /**
  * Google Play Console API Integration Service
- * Handles direct publishing to developer's Play Store account
+ * Handles OAuth-based authorization and direct publishing to Google Play Store
  */
 class GooglePlayConsoleService {
   constructor() {
     this.androidpublisher = null;
-    this.auth = null;
+    this.oauth2Client = null;
+    this.credentials = {
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_secret: process.env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/publishing/oauth/callback'
+    };
   }
 
   /**
-   * Initialize Google Play Console API with developer credentials
+   * Generate OAuth authorization URL for Google Play Developer account
+   * @returns {string} Authorization URL
    */
-  async initialize(serviceAccountKey) {
+  getAuthorizationUrl() {
+    this.oauth2Client = new google.auth.OAuth2(
+      this.credentials.client_id,
+      this.credentials.client_secret,
+      this.credentials.redirect_uri
+    );
+
+    const authUrl = this.oauth2Client.generateAuthUrl({
+      access_type: 'offline',
+      scope: ['https://www.googleapis.com/auth/androidpublisher'],
+      prompt: 'consent'
+    });
+
+    return authUrl;
+  }
+
+  /**
+   * Exchange authorization code for access tokens
+   * @param {string} authorizationCode - Authorization code from OAuth callback
+   */
+  async exchangeCodeForTokens(authorizationCode) {
     try {
-      const credentials = JSON.parse(serviceAccountKey);
-      
-      this.auth = new google.auth.GoogleAuth({
-        credentials,
-        scopes: ['https://www.googleapis.com/auth/androidpublisher']
-      });
-      
+      if (!this.oauth2Client) {
+        throw new Error('OAuth client not initialized');
+      }
+
+      const { tokens } = await this.oauth2Client.getToken(authorizationCode);
+      this.oauth2Client.setCredentials(tokens);
+
+      // Initialize Android Publisher API with OAuth credentials
       this.androidpublisher = google.androidpublisher({
         version: 'v3',
-        auth: this.auth
+        auth: this.oauth2Client
       });
-      
-      return { success: true };
+
+      return { 
+        success: true, 
+        message: 'Google Play Developer account authorized successfully',
+        tokens: {
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          expiry_date: tokens.expiry_date
+        }
+      };
     } catch (error) {
-      console.error('Failed to initialize Google Play Console API:', error);
-      return { success: false, error: error.message };
+      console.error('Failed to exchange authorization code:', error);
+      throw new Error(`OAuth authorization failed: ${error.message}`);
     }
   }
 
   /**
-   * Validate developer's Google Play Console credentials
+   * Initialize API with existing OAuth tokens
+   * @param {Object} tokens - OAuth tokens (access_token, refresh_token, etc.)
    */
-  async validateCredentials(serviceAccountKey, packageName) {
+  async initializeWithTokens(tokens) {
     try {
-      const initResult = await this.initialize(serviceAccountKey);
-      if (!initResult.success) {
-        return { valid: false, error: initResult.error };
+      this.oauth2Client = new google.auth.OAuth2(
+        this.credentials.client_id,
+        this.credentials.client_secret,
+        this.credentials.redirect_uri
+      );
+
+      this.oauth2Client.setCredentials(tokens);
+
+      // Initialize Android Publisher API
+      this.androidpublisher = google.androidpublisher({
+        version: 'v3',
+        auth: this.oauth2Client
+      });
+
+      return { success: true, message: 'Google Play Console API initialized with OAuth tokens' };
+    } catch (error) {
+      console.error('Failed to initialize with tokens:', error);
+      throw new Error(`Token initialization failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Validate Google Play Console credentials and package access
+   * @param {string} packageName - App package name
+   */
+  async validateCredentials(packageName) {
+    try {
+      if (!this.androidpublisher) {
+        return {
+          valid: false,
+          error: 'Google Play Console API not initialized'
+        };
       }
 
-      // Test API access by getting app details
-      const response = await this.androidpublisher.applications.get({
+      // Try to access the app to validate permissions
+      const response = await this.androidpublisher.edits.insert({
         packageName: packageName
       });
 
-      return { 
-        valid: true, 
-        appInfo: {
-          packageName: response.data.packageName,
-          defaultLanguage: response.data.defaultLanguage
+      if (response.data && response.data.id) {
+        // Get developer account info if possible
+        let developerAccount = null;
+        try {
+          const accountResponse = await this.androidpublisher.edits.get({
+            packageName: packageName,
+            editId: response.data.id
+          });
+          developerAccount = accountResponse.data;
+        } catch (accountError) {
+          // Account info is optional
         }
-      };
+
+        return {
+          valid: true,
+          message: 'Credentials and package access validated',
+          developerAccount: developerAccount
+        };
+      } else {
+        return {
+          valid: false,
+          error: 'Unable to access the specified package'
+        };
+      }
     } catch (error) {
-      return { 
-        valid: false, 
-        error: `Invalid credentials or package name: ${error.message}` 
+      return {
+        valid: false,
+        error: `Validation failed: ${error.message}`
       };
     }
   }
@@ -266,26 +348,35 @@ class GooglePlayConsoleService {
   }
 
   /**
-   * Get app status from Google Play Console
+   * Get app publishing status
+   * @param {string} packageName - App package name
    */
-  async getAppStatus(serviceAccountKey, packageName) {
+  async getAppStatus(packageName) {
     try {
-      const initResult = await this.initialize(serviceAccountKey);
-      if (!initResult.success) {
-        return { success: false, error: initResult.error };
+      if (!this.androidpublisher) {
+        return { 
+          success: false, 
+          error: 'Google Play Console API not initialized' 
+        };
       }
 
-      const response = await this.androidpublisher.applications.get({
+      // Get app information
+      const appResponse = await this.androidpublisher.applications.get({
+        packageName: packageName
+      });
+
+      // Get latest edit information
+      const editResponse = await this.androidpublisher.edits.insert({
         packageName: packageName
       });
 
       return {
         success: true,
         status: {
-          packageName: response.data.packageName,
-          defaultLanguage: response.data.defaultLanguage,
-          contactEmail: response.data.contactEmail,
-          contactPhone: response.data.contactPhone
+          packageName: appResponse.data.packageName,
+          defaultLanguage: appResponse.data.defaultLanguage,
+          editId: editResponse.data.id,
+          lastUpdated: new Date().toISOString()
         }
       };
     } catch (error) {

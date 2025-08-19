@@ -1,38 +1,236 @@
 import express from 'express';
-import googlePlayConsoleService from '../services/googlePlayConsole.js';
-import { generateAPKFile, generateIPAFile, createWebViewApp } from '../services/appGenerator.js';
-import path from 'path';
+import { GooglePlayConsoleService } from '../services/googlePlayConsole.js';
+import { generateAPKFile } from '../services/appGenerator.js';
 import fs from 'fs/promises';
+import path from 'path';
 
 const router = express.Router();
+const googlePlayService = new GooglePlayConsoleService();
+
+// Store user sessions temporarily (in production, use Redis or database)
+const userSessions = new Map();
 
 /**
- * Validate Google Play Console credentials
+ * Initiate OAuth authorization flow
  */
-router.post('/validate-credentials', async (req, res) => {
-  try {
-    const { serviceAccountKey, packageName } = req.body;
-    
-    if (!serviceAccountKey || !packageName) {
-      return res.status(400).json({
-        success: false,
-        error: 'Service account key and package name are required'
-      });
+router.get('/authorize', (req, res) => {
+    try {
+        const authUrl = googlePlayService.getAuthorizationUrl();
+        
+        res.json({
+            success: true,
+            authorizationUrl: authUrl,
+            message: 'Please authorize your Google Play Developer account'
+        });
+
+    } catch (error) {
+        console.error('Authorization initiation error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to initiate authorization'
+        });
     }
+});
 
-    const validation = await googlePlayConsoleService.validateCredentials(
-      serviceAccountKey, 
-      packageName
-    );
+/**
+ * Handle OAuth callback
+ */
+router.get('/oauth/callback', async (req, res) => {
+    try {
+        const { code, state } = req.query;
 
-    res.json(validation);
-  } catch (error) {
-    console.error('Credential validation error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to validate credentials'
-    });
-  }
+        if (!code) {
+            return res.status(400).json({
+                success: false,
+                error: 'Authorization code not provided'
+            });
+        }
+
+        // Exchange code for tokens
+        const tokenResult = await googlePlayService.exchangeCodeForTokens(code);
+        
+        if (!tokenResult.success) {
+            return res.status(401).json({
+                success: false,
+                error: 'Failed to exchange authorization code'
+            });
+        }
+
+        // Generate session ID and store tokens
+        const sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        userSessions.set(sessionId, {
+            tokens: tokenResult.tokens,
+            authorizedAt: new Date(),
+            expiresAt: new Date(tokenResult.tokens.expiry_date)
+        });
+
+        // Redirect to success page with session ID
+        res.redirect(`/publish.html?authorized=true&session=${sessionId}`);
+
+    } catch (error) {
+        console.error('OAuth callback error:', error);
+        res.redirect('/publish.html?error=authorization_failed');
+    }
+});
+
+/**
+ * Validate user authorization status
+ */
+router.post('/validate-authorization', async (req, res) => {
+    try {
+        const { sessionId, packageName } = req.body;
+
+        if (!sessionId || !packageName) {
+            return res.status(400).json({
+                success: false,
+                error: 'Session ID and package name are required'
+            });
+        }
+
+        const session = userSessions.get(sessionId);
+        if (!session) {
+            return res.status(401).json({
+                success: false,
+                error: 'Invalid or expired session'
+            });
+        }
+
+        // Check if tokens are still valid
+        if (new Date() > session.expiresAt) {
+            userSessions.delete(sessionId);
+            return res.status(401).json({
+                success: false,
+                error: 'Authorization expired, please re-authorize'
+            });
+        }
+
+        // Initialize API with stored tokens
+        await googlePlayService.initializeWithTokens(session.tokens);
+        
+        // Validate package name access
+        const validationResult = await googlePlayService.validateCredentials(packageName);
+        
+        if (!validationResult.success) {
+            return res.status(403).json({
+                success: false,
+                error: 'No access to the specified package name or invalid developer account'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Authorization validated successfully',
+            packageName: packageName,
+            developerAccount: validationResult.developerAccount
+        });
+
+    } catch (error) {
+        console.error('Authorization validation error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to validate authorization'
+        });
+    }
+});
+
+/**
+ * Publish app to Google Play Console using OAuth session
+ */
+router.post('/publish', async (req, res) => {
+    try {
+        const { 
+            sessionId,
+            packageName, 
+            appName, 
+            appDescription, 
+            websiteUrl,
+            iconUrl,
+            track = 'internal' // Default to internal testing
+        } = req.body;
+
+        // Validate required fields
+        if (!sessionId || !packageName || !appName || !websiteUrl) {
+            return res.status(400).json({
+                success: false,
+                error: 'Missing required fields: sessionId, packageName, appName, websiteUrl'
+            });
+        }
+
+        // Validate session
+        const session = userSessions.get(sessionId);
+        if (!session) {
+            return res.status(401).json({
+                success: false,
+                error: 'Invalid or expired session. Please re-authorize.'
+            });
+        }
+
+        // Check if tokens are still valid
+        if (new Date() > session.expiresAt) {
+            userSessions.delete(sessionId);
+            return res.status(401).json({
+                success: false,
+                error: 'Authorization expired. Please re-authorize.'
+            });
+        }
+
+        // Initialize Google Play Console API with stored tokens
+        await googlePlayService.initializeWithTokens(session.tokens);
+
+        // Generate APK file
+        const apkResult = await generateAPKFile({
+            appName,
+            packageName,
+            websiteUrl,
+            iconUrl
+        });
+
+        if (!apkResult.success) {
+            return res.status(500).json({
+                success: false,
+                error: 'Failed to generate APK file'
+            });
+        }
+
+        // Publish to Google Play Console
+        const publishResult = await googlePlayService.publishApp({
+            packageName,
+            apkPath: apkResult.apkPath,
+            appName,
+            appDescription: appDescription || `Mobile app for ${appName}`,
+            track
+        });
+
+        // Clean up temporary APK file
+        try {
+            await fs.unlink(apkResult.apkPath);
+        } catch (cleanupError) {
+            console.warn('Failed to clean up temporary APK file:', cleanupError);
+        }
+
+        if (!publishResult.success) {
+            return res.status(500).json({
+                success: false,
+                error: publishResult.error || 'Failed to publish app'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'App published successfully to your Google Play Console',
+            editId: publishResult.editId,
+            track: track,
+            packageName: packageName,
+            developerConsoleUrl: `https://play.google.com/console/u/0/developers/${publishResult.developerId}/app/${packageName}`
+        });
+
+    } catch (error) {
+        console.error('App publishing error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to publish app'
+        });
+    }
 });
 
 /**
@@ -143,81 +341,119 @@ router.post('/publish-to-play-store', async (req, res) => {
 /**
  * Get publishing status
  */
-router.get('/status/:publishId', async (req, res) => {
-  try {
-    const { publishId } = req.params;
-    const { serviceAccountKey, packageName } = req.query;
+router.get('/status/:sessionId/:packageName', async (req, res) => {
+    try {
+        const { sessionId, packageName } = req.params;
 
-    if (!serviceAccountKey || !packageName) {
-      return res.status(400).json({
-        success: false,
-        error: 'Service account key and package name are required'
-      });
+        const session = userSessions.get(sessionId);
+        if (!session) {
+            return res.status(401).json({
+                success: false,
+                error: 'Invalid or expired session'
+            });
+        }
+
+        // Check if tokens are still valid
+        if (new Date() > session.expiresAt) {
+            userSessions.delete(sessionId);
+            return res.status(401).json({
+                success: false,
+                error: 'Authorization expired'
+            });
+        }
+
+        // Initialize API with stored tokens
+        await googlePlayService.initializeWithTokens(session.tokens);
+        
+        // Get app status
+        const statusResult = await googlePlayService.getAppStatus(packageName);
+        
+        res.json({
+            success: true,
+            status: statusResult
+        });
+
+    } catch (error) {
+        console.error('Status check error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to check app status'
+        });
     }
-
-    const status = await googlePlayConsoleService.getAppStatus(
-      serviceAccountKey, 
-      packageName
-    );
-
-    res.json(status);
-  } catch (error) {
-    console.error('Status check error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to check publishing status'
-    });
-  }
 });
 
 /**
- * Get developer onboarding guide
+ * Get onboarding guide for Google Play Console OAuth setup
  */
 router.get('/onboarding-guide', (req, res) => {
-  res.json({
-    success: true,
-    guide: {
-      title: 'Google Play Console Setup Guide',
-      steps: [
-        {
-          step: 1,
-          title: 'Create Google Play Console Account',
-          description: 'Sign up for Google Play Console with a one-time $25 registration fee',
-          url: 'https://play.google.com/console/signup'
-        },
-        {
-          step: 2,
-          title: 'Create a Service Account',
-          description: 'Go to Google Cloud Console and create a service account for API access',
-          url: 'https://console.cloud.google.com/iam-admin/serviceaccounts'
-        },
-        {
-          step: 3,
-          title: 'Enable Google Play Developer API',
-          description: 'Enable the Google Play Developer API in your Google Cloud project',
-          url: 'https://console.cloud.google.com/apis/library/androidpublisher.googleapis.com'
-        },
-        {
-          step: 4,
-          title: 'Grant Permissions',
-          description: 'In Play Console, grant your service account the necessary permissions',
-          permissions: ['Release manager', 'View app information']
-        },
-        {
-          step: 5,
-          title: 'Download Service Account Key',
-          description: 'Download the JSON key file for your service account',
-          note: 'Keep this file secure and never share it publicly'
+    res.json({
+        success: true,
+        guide: {
+            title: 'Google Play Developer Authorization Guide',
+            subtitle: 'Secure OAuth-based publishing workflow',
+            steps: [
+                {
+                    step: 1,
+                    title: 'Google Play Developer Account Required',
+                    description: 'You must have an active Google Play Developer account to use our publishing service',
+                    requirements: [
+                        'Active Google Play Developer account ($25 one-time fee)',
+                        'Published at least one app (or have publishing permissions)',
+                        'Valid Google account with developer access'
+                    ],
+                    note: 'This requirement serves as our primary security filter - only legitimate developers can authorize our platform'
+                },
+                {
+                    step: 2,
+                    title: 'One-Click Authorization',
+                    description: 'Click "Authorize with Google Play" to connect your developer account',
+                    process: [
+                        'You\'ll be redirected to Google\'s secure OAuth screen',
+                        'Sign in with your Google Play Developer account',
+                        'Grant our platform permission to publish on your behalf',
+                        'You\'ll be redirected back with authorization confirmed'
+                    ]
+                },
+                {
+                    step: 3,
+                    title: 'Secure Publishing',
+                    description: 'Once authorized, you can publish apps directly to your Play Console',
+                    benefits: [
+                        'No manual file downloads or uploads',
+                        'Apps appear directly in your Play Console',
+                        'Full control over your developer account',
+                        'Revoke access anytime from your Google account settings'
+                    ]
+                },
+                {
+                    step: 4,
+                    title: 'Google\'s Review Process',
+                    description: 'All published apps go through Google\'s standard review process',
+                    security: [
+                        'Google reviews all apps before they go live',
+                        'Your developer account reputation is maintained',
+                        'Standard Play Store policies apply',
+                        'You retain full ownership and control'
+                    ]
+                }
+            ],
+            security: {
+                title: 'Why This Model is Secure',
+                points: [
+                    'Only verified Google Play Developers can use our service',
+                    'We never see your passwords - OAuth handles authentication',
+                    'You can revoke our access anytime from your Google account',
+                    'All apps go through Google\'s rigorous review process',
+                    'Your developer account and reputation remain under your control'
+                ]
+            },
+            troubleshooting: {
+                'Not a Google Play Developer': 'You must have an active Google Play Developer account to authorize our platform',
+                'Authorization failed': 'Make sure you\'re signed in to the correct Google account with developer access',
+                'Access denied': 'Ensure your Google Play Developer account is in good standing and has publishing permissions'
+            }
         }
-      ],
-      requirements: {
-        playConsoleAccount: '$25 one-time fee',
-        googleCloudProject: 'Free tier available',
-        serviceAccount: 'Required for API access',
-        packageName: 'Must be unique (e.g., com.yourcompany.appname)'
-      }
-    }
-  });
+    });
 });
 
 export default router;
