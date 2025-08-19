@@ -15,16 +15,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Import routes
-import appRoutes from './routes/apps.js';
-import userRoutes from './routes/users.js';
-import analyticsRoutes from './routes/analytics.js';
+import appsRoutes from './routes/apps.js';
 import aiRoutes from './routes/ai.js';
-import traeAIRoutes from './routes/traeai.js';
-import legalRoutes from './routes/legal.js';
-import qualityRoutes from './routes/quality.js';
-import partnershipRoutes from './routes/partnerships.js';
-import globalRoutes from './routes/global.js';
+import analyticsRoutes from './routes/analytics.js';
 import proxyRoutes from './routes/proxy.js';
+import usersRoutes from './routes/users.js';
+import globalRoutes from './routes/global.js';
+import qualityRoutes from './routes/quality.js';
+import partnershipsRoutes from './routes/partnerships.js';
+import legalRoutes from './routes/legal.js';
+import traeaiRoutes from './routes/traeai.js';
+import publishingRoutes from './routes/publishing.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -106,17 +107,18 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Logging
 app.use(morgan('combined'));
 
-// API Routes
-app.use('/api/apps', appRoutes);
-app.use('/api/users', userRoutes);
+// API routes
+app.use('/api/apps', appsRoutes);
+app.use('/api/users', usersRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api/traeai', traeAIRoutes);
+app.use('/api/traeai', traeaiRoutes);
 app.use('/api/legal', legalRoutes);
 app.use('/api/quality', qualityRoutes);
-app.use('/api/partnerships', partnershipRoutes);
+app.use('/api/partnerships', partnershipsRoutes);
 app.use('/api/global', globalRoutes);
 app.use('/api/proxy', proxyRoutes);
+app.use('/api/publishing', publishingRoutes);
 
 // Enhanced health check endpoint for production monitoring
 app.get('/api/health', async (req, res) => {
@@ -160,7 +162,7 @@ app.get('/health', (req, res) => {
 app.use(express.static(__dirname));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve publish.html specifically
+// Serve specific HTML pages BEFORE the wildcard route
 app.get('/publish.html', (req, res) => {
   const publishPath = path.join(__dirname, 'publish.html');
   if (fs.existsSync(publishPath)) {
@@ -170,7 +172,6 @@ app.get('/publish.html', (req, res) => {
   }
 });
 
-// Serve dashboard.html specifically
 app.get('/dashboard.html', (req, res) => {
   const dashboardPath = path.join(__dirname, 'dashboard.html');
   if (fs.existsSync(dashboardPath)) {
@@ -180,7 +181,28 @@ app.get('/dashboard.html', (req, res) => {
   }
 });
 
-// Serve index.html for all non-API routes
+// Serve APK downloads
+app.get('/downloads/:filename', (req, res) => {
+  const filename = req.params.filename;
+  const filePath = path.join(__dirname, 'downloads', filename);
+  
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+  
+  // Set appropriate headers for APK download
+  if (filename.endsWith('.apk')) {
+    res.setHeader('Content-Type', 'application/vnd.android.package-archive');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  } else if (filename.endsWith('.ipa')) {
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+  }
+  
+  res.sendFile(filePath);
+});
+
+// Serve index.html for all other non-API routes
 app.get('*', (req, res) => {
   if (!req.path.startsWith('/api/')) {
     const publicIndexPath = path.join(__dirname, 'public', 'index.html');

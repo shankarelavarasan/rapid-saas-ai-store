@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/aos.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
@@ -53,16 +59,16 @@
                                 <div class="store-info">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Google Play" class="store-logo">
                                     <div class="store-details">
-                                        <h4>Google Play Store</h4>
-                                        <p>Reach billions of Android users worldwide</p>
+                                        <h4>Google Play Store - One-Click Publishing</h4>
+                                        <p>Seamlessly publish directly to your Google Play Console</p>
                                         <ul>
-                                            <li>$25 one-time registration fee</li>
-                                            <li>Review process: 1-3 days</li>
-                                            <li>Global distribution</li>
+                                            <li>✨ Automated deployment pipeline</li>
+                                            <li>🔒 Secure credential management</li>
+                                            <li>⚡ Instant publishing workflow</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <button class="btn btn-primary" onclick="publishToPlayStore()">Publish to Play Store</button>
+                                <button class="btn btn-primary" onclick="setupGooglePlayConsole()" id="playstore-btn">Setup & Publish</button>
                             </div>
 
                             <div class="store-option">
@@ -81,18 +87,22 @@
                                 <button class="btn btn-primary" onclick="publishToAppStore()">Publish to App Store</button>
                             </div>
 
-                            <div class="download-section">
-                                <h3>Direct Download</h3>
-                                <p>Download the APK file directly for testing or sideloading</p>
-                                <div class="download-options">
-                                    <button class="btn btn-secondary" onclick="downloadAPK()">
-                                        <i class="fas fa-download"></i>
-                                        Download APK (Android)
-                                    </button>
-                                    <button class="btn btn-secondary" onclick="downloadIPA()">
-                                        <i class="fas fa-download"></i>
-                                        Download IPA (iOS)
-                                    </button>
+                            <div class="credentials-section" id="credentials-section" style="display: none;">
+                                <h3>🔐 Google Play Console Setup</h3>
+                                <p>Connect your Google Play Console account for automated publishing</p>
+                                <div class="credentials-form">
+                                    <div class="form-group">
+                                        <label for="service-account-key">Service Account Key (JSON)</label>
+                                        <textarea id="service-account-key" placeholder="Paste your Google Play Console service account JSON key here..." rows="6"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="package-name">Package Name</label>
+                                        <input type="text" id="package-name" placeholder="com.yourcompany.appname" value="com.rapidtech.generatedapp">
+                                    </div>
+                                    <div class="form-actions">
+                                        <button class="btn btn-primary" onclick="validateAndPublish()">Validate & Publish</button>
+                                        <button class="btn btn-secondary" onclick="hideCredentialsForm()">Cancel</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -126,44 +136,117 @@
         document.getElementById('app-description').textContent = appData.description;
         document.getElementById('app-icon').src = appData.icon;
 
-        function publishToPlayStore() {
-            alert('Publishing to Google Play Store...\n\nThis would integrate with Google Play Console API in a production environment.');
-            // In real implementation, this would call the backend API
-            fetch('/api/apps/' + appId + '/publish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ targetStores: ['google-play'] })
-            }).catch(err => console.log('Demo mode - API not connected'));
+        function setupGooglePlayConsole() {
+            document.getElementById('credentials-section').style.display = 'block';
+            document.getElementById('playstore-btn').textContent = 'Setup in Progress...';
+            document.getElementById('playstore-btn').disabled = true;
+        }
+
+        function hideCredentialsForm() {
+            document.getElementById('credentials-section').style.display = 'none';
+            document.getElementById('playstore-btn').textContent = 'Setup & Publish';
+            document.getElementById('playstore-btn').disabled = false;
+        }
+
+        async function validateAndPublish() {
+            const serviceAccountKey = document.getElementById('service-account-key').value;
+            const packageName = document.getElementById('package-name').value;
+
+            if (!serviceAccountKey.trim()) {
+                showNotification('Please provide your Google Play Console service account key', 'error');
+                return;
+            }
+
+            if (!packageName.trim()) {
+                showNotification('Please provide a valid package name', 'error');
+                return;
+            }
+
+            try {
+                // Validate credentials first
+                showNotification('Validating Google Play Console credentials...', 'info');
+                
+                const validateResponse = await fetch('/api/publishing/validate-credentials', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        serviceAccountKey: JSON.parse(serviceAccountKey),
+                        packageName 
+                    })
+                });
+
+                if (!validateResponse.ok) {
+                    throw new Error('Invalid credentials or package name');
+                }
+
+                showNotification('Credentials validated! Publishing app...', 'success');
+
+                // Publish the app
+                const publishResponse = await fetch('/api/publishing/publish-app', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        appId: appId,
+                        serviceAccountKey: JSON.parse(serviceAccountKey),
+                        packageName,
+                        appName: appData.name
+                    })
+                });
+
+                const result = await publishResponse.json();
+
+                if (publishResponse.ok) {
+                    showNotification('🎉 App successfully published to Google Play Console!', 'success');
+                    hideCredentialsForm();
+                    document.getElementById('playstore-btn').textContent = '✅ Published';
+                    document.getElementById('playstore-btn').style.background = '#4CAF50';
+                } else {
+                    throw new Error(result.error || 'Publishing failed');
+                }
+
+            } catch (error) {
+                console.error('Publishing error:', error);
+                showNotification('Publishing failed: ' + error.message, 'error');
+            }
         }
 
         function publishToAppStore() {
-            alert('Publishing to Apple App Store...\n\nThis would integrate with App Store Connect API in a production environment.');
-            // In real implementation, this would call the backend API
-            fetch('/api/apps/' + appId + '/publish', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ targetStores: ['app-store'] })
-            }).catch(err => console.log('Demo mode - API not connected'));
+            showNotification('Apple App Store integration coming soon! 🍎', 'info');
         }
-
-        function downloadAPK() {
-            // Create a mock APK download
-            const link = document.createElement('a');
-            link.href = 'data:application/vnd.android.package-archive;base64,UEsDBBQAAAAIAA==';
-            link.download = appData.name.replace(/\s+/g, '-').toLowerCase() + '.apk';
-            link.click();
+        
+        function showNotification(message, type = 'info') {
+            // Simple notification system
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
             
-            alert('APK download started!\n\nIn a production environment, this would download the actual compiled APK file.');
-        }
-
-        function downloadIPA() {
-            // Create a mock IPA download
-            const link = document.createElement('a');
-            link.href = 'data:application/octet-stream;base64,UEsDBBQAAAAIAA==';
-            link.download = appData.name.replace(/\s+/g, '-').toLowerCase() + '.ipa';
-            link.click();
+            let backgroundColor;
+            switch(type) {
+                case 'success': backgroundColor = '#4CAF50'; break;
+                case 'error': backgroundColor = '#f44336'; break;
+                case 'info': backgroundColor = '#2196F3'; break;
+                default: backgroundColor = '#2196F3';
+            }
             
-            alert('IPA download started!\n\nIn a production environment, this would download the actual compiled IPA file.');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${backgroundColor};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 5px;
+                z-index: 1000;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                max-width: 400px;
+                word-wrap: break-word;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, type === 'error' ? 5000 : 3000);
         }
     </script>
 
@@ -257,19 +340,52 @@
             padding-left: 1.5rem;
         }
 
-        .download-section {
+        .credentials-section {
             background: #f8fafc;
             border-radius: 12px;
             padding: 2rem;
             margin-top: 2rem;
-            text-align: center;
+            border: 2px solid #e2e8f0;
         }
 
-        .download-options {
+        .credentials-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-actions {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
 
         @media (max-width: 768px) {
@@ -284,10 +400,32 @@
                 text-align: center;
             }
 
-            .download-options {
+            .form-actions {
                 flex-direction: column;
+            }
+
+            .credentials-section {
+                padding: 1.5rem;
+            }
+
+            .app-info {
+                flex-direction: column;
+                text-align: center;
             }
         }
     </style>
+    
+    <!-- Scripts -->
+    <script src="js/aos.min.js"></script>
+    <script src="js/animations.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
 </body>
 </html>

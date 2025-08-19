@@ -611,7 +611,11 @@ async function buildMobileApp(formData) {
         success: true,
         buildId: `demo-${hostname.replace(/\./g, '-')}-${Date.now()}`,
         status: 'completed',
-        downloadUrl: '#demo-download',
+        downloadUrl: '/downloads/demo-app.apk',
+        downloadLinks: {
+          android: '/downloads/demo-app.apk',
+          ios: '/downloads/demo-app.ipa'
+        },
         appName: `${hostname} Mobile`,
         version: '1.0.0',
         platform: 'Android',
@@ -636,8 +640,24 @@ async function buildMobileApp(formData) {
     });
         
     const data = await response.json();
-    showNotification('Mobile app built successfully!', 'success');
-    return data;
+    
+    if (data.success && data.downloadLinks) {
+      showNotification('Mobile app built successfully!', 'success');
+      return {
+        success: true,
+        buildId: data.app?.id || generateAppId(),
+        status: 'completed',
+        downloadUrl: data.downloadLinks.android,
+        downloadLinks: data.downloadLinks,
+        appName: formData.appName || 'Generated App',
+        version: '1.0.0',
+        platform: 'Android',
+        buildTime: '2 minutes',
+        size: '15.2 MB'
+      };
+    } else {
+      throw new Error(data.error || 'App generation failed');
+    }
   } catch (error) {
     console.error('Build error:', error);
     showNotification(`App build failed: ${error.message}`, 'error');
@@ -647,8 +667,12 @@ async function buildMobileApp(formData) {
       success: true,
       buildId: generateAppId(),
       status: 'completed',
-      downloadUrl: '#demo-fallback',
-      appName: 'Mobile App',
+      downloadUrl: '/downloads/demo-app.apk',
+      downloadLinks: {
+        android: '/downloads/demo-app.apk',
+        ios: '/downloads/demo-app.ipa'
+      },
+      appName: formData.appName || 'Mobile App',
       version: '1.0.0',
       platform: 'Android',
       buildTime: '2 minutes',
@@ -1069,19 +1093,26 @@ function trackConversionEvent(event, data = {}) {
 
 // Action Functions
 function downloadApp(appId) {
-  // Simulate app download
+  // Get the actual download URL from conversion result
+  const result = conversionState.result;
+  if (!result || !result.downloadLinks) {
+    showNotification('Download not available. Please try converting again.', 'error');
+    return;
+  }
+  
   showNotification('Starting download...', 'info');
     
   setTimeout(() => {
     const link = document.createElement('a');
-    link.href = '/downloads/demo-app.apk';
-    link.download = 'my-app.apk';
+    // Use the actual download URL from the API response
+    link.href = result.downloadLinks.android || '/downloads/demo-app.apk';
+    link.download = `${result.appName || 'app'}.apk`;
     link.click();
         
     showNotification('Download started! Check your downloads folder.', 'success');
   }, 1000);
     
-  trackConversionEvent('app_downloaded', { appId });
+  trackConversionEvent('app_downloaded', { appId, downloadUrl: result.downloadLinks.android });
 }
 
 function previewApp(appId) {
