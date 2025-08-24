@@ -1,5 +1,13 @@
 // Conversion JavaScript for Rapid SaaS AI Store
 
+// Configuration
+const CONFIG = {
+  API_BASE_URL: window.location.hostname === 'localhost' 
+    ? 'http://localhost:5000/api' 
+    : 'https://your-render-backend.onrender.com/api',
+  DEMO_MODE: true // Enable demo mode for GitHub Pages
+};
+
 // Conversion Configuration
 const CONVERSION_CONFIG = {
   STEPS: [
@@ -320,6 +328,12 @@ async function performConversionStep(stepId, formData) {
 }
 
 async function validateWebsite(url) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true, accessible: true, responsive: true };
+  }
+
   try {
     const response = await fetch(`${CONFIG.API_BASE_URL}/apps/analyze`, {
       method: 'POST',
@@ -335,12 +349,25 @@ async function validateWebsite(url) {
     return data;
   } catch (error) {
     console.error('Validation error:', error);
-    // Continue with mock validation for demo
+    // Fallback to mock validation for demo
     return { success: true, accessible: true, responsive: true };
   }
 }
 
 async function analyzeWebsite(url) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return {
+      success: true,
+      analysis: {
+        title: 'SaaS Application',
+        description: 'A modern web application',
+        category: 'productivity'
+      }
+    };
+  }
+
   try {
     const response = await fetch(`${CONFIG.API_BASE_URL}/apps/analyze`, {
       method: 'POST',
@@ -361,7 +388,7 @@ async function analyzeWebsite(url) {
     return data;
   } catch (error) {
     console.error('Analysis error:', error);
-    // Continue with mock analysis for demo
+    // Fallback to mock analysis for demo
     return {
       success: true,
       analysis: {
@@ -387,6 +414,17 @@ async function generateAssets(formData) {
   if (!formData.generateAssets) {
     return { skipped: true };
   }
+  
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      icon: 'assets/default-app-icon.png',
+      splashScreen: 'assets/screenshot-1.png',
+      screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
+    };
+  }
     
   try {
     const response = await fetch(`${CONFIG.API_BASE_URL}/ai/generate-assets`, {
@@ -399,16 +437,35 @@ async function generateAssets(formData) {
     return data;
   } catch (error) {
     console.error('Asset generation error:', error);
-    // Continue with mock assets for demo
+    // Fallback to mock assets for demo
     return {
-      icon: '/assets/generated-icon.png',
-      splashScreen: '/assets/generated-splash.png',
-      screenshots: ['/assets/screenshot-1.png', '/assets/screenshot-2.png']
+      success: true,
+      icon: 'assets/default-app-icon.png',
+      splashScreen: 'assets/screenshot-1.png',
+      screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
     };
   }
 }
 
 async function buildMobileApp(formData) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    // Simulate build process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      buildId: generateAppId(),
+      status: 'completed',
+      appName: formData.appName || 'Generated App',
+      downloadUrls: {
+        android: 'downloads/demo-app.apk',
+        ios: 'downloads/demo-app.ipa'
+      },
+      buildTime: '2.3 minutes',
+      features: ['Cross-platform', 'Responsive Design', 'Offline Support']
+    };
+  }
+
   try {
     const response = await fetch(`${CONFIG.API_BASE_URL}/apps/generate`, {
       method: 'POST',
@@ -429,11 +486,18 @@ async function buildMobileApp(formData) {
     return data;
   } catch (error) {
     console.error('Build error:', error);
-    // Continue with mock build for demo
+    // Fallback to mock build for demo
     return {
+      success: true,
       buildId: generateAppId(),
-      status: 'building',
-      estimatedTime: 120000
+      status: 'completed',
+      appName: formData.appName || 'Generated App',
+      downloadUrls: {
+        android: 'downloads/demo-app.apk',
+        ios: 'downloads/demo-app.ipa'
+      },
+      buildTime: '2.3 minutes',
+      features: ['Cross-platform', 'Responsive Design', 'Offline Support']
     };
   }
 }
@@ -815,13 +879,19 @@ function trackConversionEvent(event, data = {}) {
     timestamp: new Date().toISOString(),
     ...data
   };
+  
+  // In demo mode, just log the event instead of sending to API
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    console.log('Analytics event (demo mode):', eventData);
+    return;
+  }
     
   fetch(`${CONFIG.API_BASE_URL}/analytics/events`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(eventData)
   }).catch(error => {
-    console.error('Analytics error:', error);
+    console.log('Analytics tracking failed:', error.message);
   });
 }
 
