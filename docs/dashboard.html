@@ -177,7 +177,7 @@
         async function loadDashboardData() {
             try {
                 // Load dashboard analytics
-                const response = await fetch(`${CONFIG.API_BASE_URL}/analytics/dashboard`);
+                const response = await fetch('/api/analytics/dashboard');
                 if (response.ok) {
                     const data = await response.json();
                     updateDashboardStats(data);
