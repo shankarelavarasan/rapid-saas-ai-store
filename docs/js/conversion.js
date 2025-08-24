@@ -412,7 +412,7 @@ async function generateAssets(formData) {
     await new Promise(resolve => setTimeout(resolve, 2000));
     return {
       success: true,
-      icon: 'assets/default-app-icon.png',
+      icon: 'assets/default-app-icon.svg',
       splashScreen: 'assets/screenshot-1.png',
       screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
     };
@@ -646,7 +646,7 @@ function showConversionSuccess(result) {
                 
                 <div class="app-preview-card">
                     <div class="app-icon">
-                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='assets/default-app-icon.png'">
+                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='assets/default-app-icon.svg'">
                     </div>
                     <div class="app-info">
                         <h3>${result.appName}</h3>

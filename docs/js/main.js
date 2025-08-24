@@ -404,7 +404,7 @@ function createAppCard(app) {
     
   card.innerHTML = `
         <div class="app-icon">
-            <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.png'">
+            <img src="${app.icon || 'assets/default-app-icon.svg'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.svg'">
         </div>
         <div class="app-info">
             <h3 class="app-name">${app.name}</h3>
