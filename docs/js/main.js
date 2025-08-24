@@ -6,7 +6,8 @@ const CONFIG = {
     ? 'http://localhost:5000/api' 
     : 'https://your-render-backend.onrender.com/api',
   DEMO_VIDEO_URL: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  ANIMATION_DURATION: 300
+  ANIMATION_DURATION: 300,
+  DEMO_MODE: window.location.hostname.includes('github.io') || window.location.hostname === 'localhost'
 };
 
 // Global state

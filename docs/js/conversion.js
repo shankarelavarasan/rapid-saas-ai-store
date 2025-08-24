@@ -1,13 +1,5 @@
 // Conversion JavaScript for Rapid SaaS AI Store
 
-// Configuration
-const CONFIG = {
-  API_BASE_URL: window.location.hostname === 'localhost' 
-    ? 'http://localhost:5000/api' 
-    : 'https://your-render-backend.onrender.com/api',
-  DEMO_MODE: true // Enable demo mode for GitHub Pages
-};
-
 // Conversion Configuration
 const CONVERSION_CONFIG = {
   STEPS: [
