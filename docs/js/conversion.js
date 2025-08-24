@@ -432,7 +432,7 @@ async function generateAssets(formData) {
     // Fallback to mock assets for demo
     return {
       success: true,
-      icon: 'assets/default-app-icon.png',
+      icon: 'assets/default-app-icon.svg',
       splashScreen: 'assets/screenshot-1.png',
       screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
     };
