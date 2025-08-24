@@ -147,23 +147,23 @@
         }
 
         function downloadAPK() {
-            // Create a mock APK download
+            // Download the actual APK file
             const link = document.createElement('a');
-            link.href = 'data:application/vnd.android.package-archive;base64,UEsDBBQAAAAIAA==';
-            link.download = appData.name.replace(/\s+/g, '-').toLowerCase() + '.apk';
+            link.href = 'downloads/demo-app.apk';
+            link.download = 'demo-app.apk';
             link.click();
             
-            alert('APK download started!\n\nIn a production environment, this would download the actual compiled APK file.');
+            alert('APK download started!');
         }
 
         function downloadIPA() {
-            // Create a mock IPA download
+            // Download the actual IPA file
             const link = document.createElement('a');
-            link.href = 'data:application/octet-stream;base64,UEsDBBQAAAAIAA==';
-            link.download = appData.name.replace(/\s+/g, '-').toLowerCase() + '.ipa';
+            link.href = 'downloads/demo-app.ipa';
+            link.download = 'demo-app.ipa';
             link.click();
             
-            alert('IPA download started!\n\nIn a production environment, this would download the actual compiled IPA file.');
+            alert('IPA download started!');
         }
     </script>
 

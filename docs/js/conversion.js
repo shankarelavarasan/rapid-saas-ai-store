@@ -291,7 +291,7 @@ async function performConversion(formData) {
     appId: generateAppId(),
     appName: await extractAppName(formData.url),
     appIcon: '/assets/generated-icon.png',
-    downloadUrl: '/downloads/app.apk',
+    downloadUrl: 'downloads/app.apk',
     previewUrl: formData.url,
     buildTime: Date.now() - conversionState.startTime,
     features: getEnabledFeatures(formData)
@@ -832,7 +832,7 @@ function downloadApp(appId) {
     
   setTimeout(() => {
     const link = document.createElement('a');
-    link.href = '/downloads/demo-app.apk';
+    link.href = 'downloads/demo-app.apk';
     link.download = 'my-app.apk';
     link.click();
         
@@ -926,7 +926,7 @@ function contactSupport() {
                     <i class="fas fa-comments"></i>
                     Live Chat
                 </a>
-                <a href="/help" class="btn btn-outline">
+                <a href="#help" class="btn btn-outline">
                     <i class="fas fa-question-circle"></i>
                     Help Center
                 </a>
