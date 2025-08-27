@@ -1,3 +1,15 @@
+---
+
+### 🚀 Live Project & Demo
+
+**This project has been professionally deployed on Netlify for optimal performance and stability.**
+
+**Please view the live, fully functional version here:**
+
+## 👉 [`https://coruscating-queijadas-4ed716.netlify.app/`](https://coruscating-queijadas-4ed716.netlify.app/) 👈
+
+---
+
 # 🚀 Rapid SaaS AI Store
 
 > A Global Distribution Platform for SaaS & AI Web Apps - Convert any SaaS to mobile app instantly
