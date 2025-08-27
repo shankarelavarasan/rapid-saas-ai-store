@@ -7,12 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/responsive.css">
-    <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/aos.min.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
@@ -31,66 +26,25 @@
             <section id="home" class="hero">
                 <div class="container">
                     <h2 class="hero-title" data-aos="fade-up" data-aos-delay="100">Convert Your SaaS to Mobile Apps</h2>
-                    <p class="hero-description" data-aos="fade-up" data-aos-delay="200">Transform your web applications into native mobile experiences with AI-powered conversion technology.</p>
-                    <button id="start-conversion" class="btn btn-primary glow" data-aos="fade-up" data-aos-delay="300">
-                        <i class="fas fa-rocket"></i>
-                        Get Started
-                    </button>
+                    <p class="hero-description" data-aos="fade-up" data-aos-delay="200">Transform your web applications into native mobile experiences with AI-powered conversion.</p>
+                    <button id="start-conversion" class="btn btn-primary" data-aos="fade-up" data-aos-delay="300">Get Started</button>
                 </div>
             </section>
 
             <section id="convert" class="convert-section">
                 <div class="container">
-                    <h2 class="section-title gradient-text" data-aos="fade-up">
-                        <i class="fas fa-magic"></i>
-                        Convert Your SaaS
-                    </h2>
-                    <p class="section-description" data-aos="fade-up" data-aos-delay="100">
-                        Transform your web application into a native mobile app with AI-powered conversion
-                    </p>
-                    <form id="conversion-form" class="convert-form" data-aos="fade-up" data-aos-delay="200">
-                        <div class="input-group">
-                            <i class="fas fa-link input-icon"></i>
-                            <input type="url" id="saas-url" placeholder="Enter your SaaS URL (e.g., https://yourapp.com)" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary glow">
-                            <i class="fas fa-rocket"></i>
-                            Start AI Conversion
-                        </button>
-                    </form>
-                    <div class="conversion-features" data-aos="fade-up" data-aos-delay="300">
-                        <div class="feature">
-                            <i class="fas fa-mobile-alt"></i>
-                            <span>Native Mobile Experience</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-bolt"></i>
-                            <span>Lightning Fast</span>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <span>Secure & Reliable</span>
-                        </div>
+                    <div class="convert-form">
+                        <!-- Conversion form will be loaded here by conversion.js -->
                     </div>
                 </div>
             </section>
 
             <section id="apps" class="apps-section">
                 <div class="container">
-                    <h2 class="section-title gradient-text" data-aos="fade-up">
-                        <i class="fas fa-star"></i>
-                        Featured Apps
-                    </h2>
-                    <p class="section-description" data-aos="fade-up" data-aos-delay="100">
-                        Discover amazing mobile applications converted from SaaS platforms
-                    </p>
-                    <div class="apps-grid" id="apps-grid">
+                    <h2 data-aos="fade-up">Available Apps</h2>
+                    <div id="apps-container" class="apps-grid" data-aos="fade-up" data-aos-delay="100">
                         <!-- Apps will be loaded here -->
                     </div>
-                    <button id="load-more" class="btn btn-secondary glow" style="display: none;">
-                        <i class="fas fa-plus"></i>
-                        Load More Apps
-                    </button>
                 </div>
             </section>
         </main>
@@ -133,9 +87,8 @@
         });
     </script>
     <script src="js/aos.min.js"></script>
-    <script src="js/animations.js"></script>
     <script src="js/main.js" defer></script>
     <script src="js/app-store.js" defer></script>
     <script src="js/conversion.js" defer></script>
 </body>
-</html>
+</html><!-- Deployment test -->

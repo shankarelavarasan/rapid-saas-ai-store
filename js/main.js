@@ -3,10 +3,11 @@
 // Configuration
 const CONFIG = {
   API_BASE_URL: window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000/api' 
-    : 'https://rapid-saas-ai-store-1.onrender.com/api',
+    ? 'http://localhost:5000/api' 
+    : 'https://your-render-backend.onrender.com/api',
   DEMO_VIDEO_URL: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  ANIMATION_DURATION: 300
+  ANIMATION_DURATION: 300,
+  DEMO_MODE: window.location.hostname.includes('github.io') || window.location.hostname === 'localhost'
 };
 
 // Global state
@@ -403,7 +404,7 @@ function createAppCard(app) {
     
   card.innerHTML = `
         <div class="app-icon">
-            <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.png'">
+            <img src="${app.icon || 'assets/default-app-icon.svg'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.svg'">
         </div>
         <div class="app-info">
             <h3 class="app-name">${app.name}</h3>
@@ -530,9 +531,9 @@ function previewApp(appId) {
             </div>
             <div class="preview-content">
                 <div class="preview-screenshots">
-                    <img src="/assets/screenshot-1.png" alt="Screenshot 1">
-                    <img src="/assets/screenshot-2.png" alt="Screenshot 2">
-                    <img src="/assets/screenshot-3.png" alt="Screenshot 3">
+                    <img src="assets/screenshot-1.png" alt="Screenshot 1">
+                <img src="assets/screenshot-2.png" alt="Screenshot 2">
+                <img src="assets/screenshot-3.png" alt="Screenshot 3">
                 </div>
                 <div class="preview-info">
                     <p>This is a preview of the mobile app. Click "Install App" to download from the app store.</p>

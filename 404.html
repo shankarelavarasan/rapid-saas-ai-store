@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8">
-    <title>Rapid SaaS AI Store</title>
-    <script type="text/javascript">
-        // GitHub Pages SPA redirect with infinite loop protection
-        if (!sessionStorage.getItem('spa_redirected')) {
-            sessionStorage.setItem('spa_redirected', 'true');
-            
-            var pathSegmentsToKeep = 1;
-            var l = window.location;
-            l.replace(
-                l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-                l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/index.html' +
-                (l.search ? '&' + l.search.slice(1) : '') +
-                l.hash
-            );
-        }
-    </script>
-</head>
-<body>
-    <p>Redirecting...</p>
-</body>
+    <title>Page Not Found - Rapid SaaS AI Store</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/components.css">
+  </head>
+  <body>
+    <div class="container">
+      <div class="error-page">
+        <h1>404 - Page Not Found</h1>
+        <p>The page you're looking for doesn't exist.</p>
+        <a href="index.html" class="btn btn-primary">Go Home</a>
+        <br><br>
+        <p><a href="dashboard.html">Dashboard</a> | <a href="publish.html">Publish</a></p>
+      </div>
+    </div>
+  </body>
 </html>

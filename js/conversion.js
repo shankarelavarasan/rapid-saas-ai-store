@@ -1,5 +1,4 @@
 // Conversion JavaScript for Rapid SaaS AI Store
-// Note: CONFIG object is defined in main.js
 
 // Conversion Configuration
 const CONVERSION_CONFIG = {
@@ -13,14 +12,7 @@ const CONVERSION_CONFIG = {
     { id: 'finalize', name: 'Finalizing App', duration: 2000 }
   ],
   TOTAL_DURATION: 21500,
-  UPDATE_INTERVAL: 100,
-  // CORS-free testing URLs
-  TEST_URLS: [
-    'https://jsonplaceholder.typicode.com',
-    'https://httpbin.org',
-    'https://reqres.in',
-    'https://api.github.com'
-  ]
+  UPDATE_INTERVAL: 100
 };
 
 // Conversion State
@@ -31,16 +23,6 @@ let conversionState = {
   startTime: null,
   result: null,
   error: null
-};
-
-// Set test URL function
-window.setTestUrl = function(url) {
-  const urlInput = document.getElementById('saas-url');
-  if (urlInput) {
-    urlInput.value = url;
-    urlInput.focus();
-    showNotification(`Test URL set: ${new URL(url).hostname}`, 'info');
-  }
 };
 
 // Initialize Conversion Module
@@ -76,42 +58,7 @@ function setupConversionElements() {
                         </button>
                     </div>
                     <div class="url-validation" id="url-validation"></div>
-                    <div class="test-urls">
-                        <p><small>🧪 Test with CORS-free URLs:</small></p>
-                        <div class="test-url-buttons">
-                            ${CONVERSION_CONFIG.TEST_URLS.map(url => 
-                              `<button type="button" class="test-url-btn" onclick="setTestUrl('${url}')">${new URL(url).hostname}</button>`
-                            ).join('')}
-                        </div>
-                    </div>
                 </div>
-                
-                <style>
-                .test-urls {
-                  margin-top: 10px;
-                  text-align: center;
-                }
-                .test-url-buttons {
-                  display: flex;
-                  gap: 8px;
-                  justify-content: center;
-                  flex-wrap: wrap;
-                  margin-top: 5px;
-                }
-                .test-url-btn {
-                  padding: 4px 8px;
-                  font-size: 11px;
-                  background: #f0f0f0;
-                  border: 1px solid #ddd;
-                  border-radius: 4px;
-                  cursor: pointer;
-                  transition: all 0.2s;
-                }
-                .test-url-btn:hover {
-                  background: #e0e0e0;
-                  border-color: #ccc;
-                }
-                </style>
                 
                 <div class="conversion-options">
                     <h3>Conversion Options</h3>
@@ -344,7 +291,7 @@ async function performConversion(formData) {
     appId: generateAppId(),
     appName: await extractAppName(formData.url),
     appIcon: '/assets/generated-icon.png',
-    downloadUrl: '/downloads/app.apk',
+    downloadUrl: 'downloads/app.apk',
     previewUrl: formData.url,
     buildTime: Date.now() - conversionState.startTime,
     features: getEnabledFeatures(formData)
@@ -373,109 +320,52 @@ async function performConversionStep(stepId, formData) {
 }
 
 async function validateWebsite(url) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return { success: true, accessible: true, responsive: true };
+  }
+
   try {
-    showNotification('Validating website...', 'info');
-    
-    // Check if it's a test URL (CORS-free)
-    const isTestUrl = CONVERSION_CONFIG.TEST_URLS.some(testUrl => url.startsWith(testUrl));
-    
-    if (isTestUrl) {
-      showNotification('Using CORS-free test URL', 'info');
-      return {
-        success: true,
-        accessible: true,
-        responsive: true,
-        isHttps: url.startsWith('https://'),
-        warnings: [],
-        metadata: {
-          title: `Test App - ${new URL(url).hostname}`,
-          description: `Demo conversion from ${url}`,
-          saasScore: 8
-        }
-      };
-    }
-    
-    // Server-side proxy validation to avoid CORS issues
-    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/validate`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/analyze`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken') || 'demo-token'}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
     });
-        
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
         
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.error || 'Website validation failed');
     }
         
-    showNotification('Website validation completed', 'success');
     return data;
   } catch (error) {
-    console.error('Validation error:', error.message);
-    showNotification(`Validation failed: ${error.message}`, 'warning');
-    
-    // Enhanced fallback validation for demo purposes
-    return { 
-      success: true, 
-      accessible: true, 
-      responsive: true,
-      isHttps: url.startsWith('https://'),
-      fallback: true,
-      warnings: ['Could not perform full validation - using basic checks'],
-      metadata: {
-        title: 'Website',
-        description: 'Converted from ' + url,
-        saasScore: 6
-      },
-      message: 'Using demo validation due to network issues'
-    };
+    console.error('Validation error:', error);
+    // Fallback to mock validation for demo
+    return { success: true, accessible: true, responsive: true };
   }
 }
 
 async function analyzeWebsite(url) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    return {
+      success: true,
+      analysis: {
+        title: 'SaaS Application',
+        description: 'A modern web application',
+        category: 'productivity'
+      }
+    };
+  }
+
   try {
-    showNotification('Analyzing website content...', 'info');
-    
-    // Check if it's a test URL (CORS-free)
-    const isTestUrl = CONVERSION_CONFIG.TEST_URLS.some(testUrl => url.startsWith(testUrl));
-    
-    if (isTestUrl) {
-      showNotification('Performing demo analysis for test URL', 'info');
-      const hostname = new URL(url).hostname;
-      return {
-        success: true,
-        analysis: {
-          title: `${hostname} Analysis`,
-          description: `AI-powered analysis of ${hostname}`,
-          features: ['API Endpoints', 'JSON Data', 'RESTful Services', 'Developer Tools'],
-          technologies: ['REST API', 'JSON', 'HTTP/HTTPS', 'Web Services'],
-          suitability: 'Excellent for testing',
-          appType: 'API Testing Tool',
-          complexity: 'Medium',
-          estimatedTime: '15 minutes'
-        }
-      };
-    }
-    
-    // Server-side analysis to bypass CORS restrictions
-    const response = await fetch(`${CONFIG.API_BASE_URL}/ai/analyze-website`, {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/apps/analyze`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken') || 'demo-token'}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url })
     });
-        
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
         
     const data = await response.json();
     if (!data.success) {
@@ -487,22 +377,16 @@ async function analyzeWebsite(url) {
       showConversionPreview(data.analysis.previewUrl);
     }
         
-    showNotification('Website analysis completed', 'success');
     return data;
   } catch (error) {
-    console.error('Analysis error:', error.message);
-    showNotification(`Analysis failed: ${error.message}`, 'warning');
-    
-    // Enhanced fallback analysis
-    const domain = new URL(url).hostname;
+    console.error('Analysis error:', error);
+    // Fallback to mock analysis for demo
     return {
       success: true,
       analysis: {
-        title: domain.replace('www.', '').split('.')[0] + ' App',
-        description: `Mobile app converted from ${domain}`,
-        category: 'productivity',
-        url: url,
-        fallback: true
+        title: 'SaaS Application',
+        description: 'A modern web application',
+        category: 'productivity'
       }
     };
   }
@@ -522,108 +406,59 @@ async function generateAssets(formData) {
   if (!formData.generateAssets) {
     return { skipped: true };
   }
-    
-  try {
-    showNotification('Generating app assets...', 'info');
-    
-    // Check if it's a test URL (CORS-free)
-    const isTestUrl = CONVERSION_CONFIG.TEST_URLS.some(testUrl => formData.url.startsWith(testUrl));
-    
-    if (isTestUrl) {
-      showNotification('Generating demo assets for test URL', 'info');
-      const hostname = new URL(formData.url).hostname;
-      return {
-        success: true,
-        assets: {
-          icon: '/assets/default-app-icon.png',
-          splash: '/assets/default-splash.png',
-          screenshots: ['/assets/demo-app-1.png', '/assets/demo-app-2.png', '/assets/demo-app-3.png'],
-          colors: {
-            primary: '#28a745',
-            secondary: '#17a2b8',
-            accent: '#ffc107'
-          },
-          appName: `${hostname} Mobile`,
-          packageName: `com.demo.${hostname.replace(/\./g, '')}`
-        }
-      };
-    }
-    
-    const response = await fetch(`${CONFIG.API_BASE_URL}/ai/generate-assets`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('authToken') || 'demo-token'}`
-      },
-      body: JSON.stringify({ 
-        url: formData.url,
-        appName: formData.appName || 'Generated App'
-      })
-    });
-        
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
-        
-    const data = await response.json();
-    showNotification('App assets generated successfully', 'success');
-    return data;
-  } catch (error) {
-    console.error('Asset generation error:', error.message);
-    showNotification(`Asset generation failed: ${error.message}`, 'warning');
-    
-    // Enhanced fallback assets
+  
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
     return {
       success: true,
-      assets: {
-        icon: '/assets/default-app-icon.png',
-        splash: '/assets/default-splash.png',
-        screenshots: ['/assets/demo-app-1.png', '/assets/demo-app-2.png', '/assets/demo-app-3.png'],
-        colors: {
-          primary: '#007bff',
-          secondary: '#6c757d',
-          accent: '#28a745'
-        },
-        appName: 'Mobile App',
-        packageName: 'com.demo.mobileapp'
-      },
-      fallback: true,
-      message: 'Using default assets due to network issues'
+      icon: 'assets/default-app-icon.svg',
+      splashScreen: 'assets/screenshot-1.png',
+      screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
+    };
+  }
+    
+  try {
+    const response = await fetch(`${CONFIG.API_BASE_URL}/ai/generate-assets`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: formData.url })
+    });
+        
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Asset generation error:', error);
+    // Fallback to mock assets for demo
+    return {
+      success: true,
+      icon: 'assets/default-app-icon.svg',
+      splashScreen: 'assets/screenshot-1.png',
+      screenshots: ['assets/screenshot-1.png', 'assets/screenshot-2.png']
     };
   }
 }
 
 async function buildMobileApp(formData) {
+  // In demo mode, skip API call and return mock data
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    // Simulate build process
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    return {
+      success: true,
+      buildId: generateAppId(),
+      status: 'completed',
+      appName: formData.appName || 'Generated App',
+      downloadUrls: {
+        android: 'downloads/demo-app.apk',
+        ios: 'downloads/demo-app.ipa'
+      },
+      buildTime: '2.3 minutes',
+      features: ['Cross-platform', 'Responsive Design', 'Offline Support']
+    };
+  }
+
   try {
-    showNotification('Building mobile app...', 'info');
-    
-    // Check if it's a test URL (CORS-free)
-    const isTestUrl = CONVERSION_CONFIG.TEST_URLS.some(testUrl => formData.url.startsWith(testUrl));
-    
-    if (isTestUrl) {
-      showNotification('Building demo app for test URL', 'info');
-      const hostname = new URL(formData.url).hostname;
-      
-      // Simulate build time
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      return {
-        success: true,
-        buildId: `demo-${hostname.replace(/\./g, '-')}-${Date.now()}`,
-        status: 'completed',
-        downloadUrl: '/downloads/demo-app.apk',
-        downloadLinks: {
-          android: '/downloads/demo-app.apk',
-          ios: '/downloads/demo-app.ipa'
-        },
-        appName: `${hostname} Mobile`,
-        version: '1.0.0',
-        platform: 'Android',
-        buildTime: '1.5 minutes',
-        size: '12.8 MB'
-      };
-    }
-    
     const response = await fetch(`${CONFIG.API_BASE_URL}/apps/generate`, {
       method: 'POST',
       headers: { 
@@ -640,44 +475,21 @@ async function buildMobileApp(formData) {
     });
         
     const data = await response.json();
-    
-    if (data.success && data.downloadLinks) {
-      showNotification('Mobile app built successfully!', 'success');
-      return {
-        success: true,
-        buildId: data.app?.id || generateAppId(),
-        status: 'completed',
-        downloadUrl: data.downloadLinks.android,
-        downloadLinks: data.downloadLinks,
-        appName: formData.appName || 'Generated App',
-        version: '1.0.0',
-        platform: 'Android',
-        buildTime: '2 minutes',
-        size: '15.2 MB'
-      };
-    } else {
-      throw new Error(data.error || 'App generation failed');
-    }
+    return data;
   } catch (error) {
     console.error('Build error:', error);
-    showNotification(`App build failed: ${error.message}`, 'error');
-    
-    // Enhanced fallback build result
+    // Fallback to mock build for demo
     return {
       success: true,
       buildId: generateAppId(),
       status: 'completed',
-      downloadUrl: '/downloads/demo-app.apk',
-      downloadLinks: {
-        android: '/downloads/demo-app.apk',
-        ios: '/downloads/demo-app.ipa'
+      appName: formData.appName || 'Generated App',
+      downloadUrls: {
+        android: 'downloads/demo-app.apk',
+        ios: 'downloads/demo-app.ipa'
       },
-      appName: formData.appName || 'Mobile App',
-      version: '1.0.0',
-      platform: 'Android',
-      buildTime: '2 minutes',
-      size: '15.2 MB',
-      fallback: true
+      buildTime: '2.3 minutes',
+      features: ['Cross-platform', 'Responsive Design', 'Offline Support']
     };
   }
 }
@@ -784,7 +596,6 @@ async function animateProgress(targetProgress, duration) {
   const startTime = Date.now();
     
   return new Promise(resolve => {
-    let lastLogTime = 0;
     const updateProgress = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
@@ -794,13 +605,6 @@ async function animateProgress(targetProgress, duration) {
             
       progressFill.style.width = `${currentProgress}%`;
       progressText.textContent = `${Math.round(currentProgress)}%`;
-      
-      // Throttle console logging to reduce spam
-      const now = Date.now();
-      if (now - lastLogTime > 500) { // Log every 500ms max
-        console.log(`Progress: ${Math.round(currentProgress)}%`);
-        lastLogTime = now;
-      }
             
       if (progress < 1) {
         requestAnimationFrame(updateProgress);
@@ -842,7 +646,7 @@ function showConversionSuccess(result) {
                 
                 <div class="app-preview-card">
                     <div class="app-icon">
-                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='assets/default-app-icon.png'">
+                        <img src="${result.appIcon}" alt="${result.appName}" onerror="this.src='assets/default-app-icon.svg'">
                     </div>
                     <div class="app-info">
                         <h3>${result.appName}</h3>
@@ -1065,54 +869,39 @@ function trackConversionEvent(event, data = {}) {
   const eventData = {
     event,
     timestamp: new Date().toISOString(),
-    userAgent: navigator.userAgent,
-    url: window.location.href,
     ...data
   };
+  
+  // In demo mode, just log the event instead of sending to API
+  if (CONFIG.DEMO_MODE || window.location.hostname.includes('github.io')) {
+    console.log('Analytics event (demo mode):', eventData);
+    return;
+  }
     
-  // Enhanced error handling for analytics
   fetch(`${CONFIG.API_BASE_URL}/analytics/events`, {
     method: 'POST',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('authToken') || 'demo-token'}`
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(eventData)
-  }).then(response => {
-    if (!response.ok) {
-      console.warn(`Analytics tracking failed: HTTP ${response.status}`);
-    }
   }).catch(error => {
-    console.warn('Analytics tracking failed:', error.message);
-    // Store failed events locally for retry
-    const failedEvents = JSON.parse(localStorage.getItem('failedAnalytics') || '[]');
-    failedEvents.push(eventData);
-    localStorage.setItem('failedAnalytics', JSON.stringify(failedEvents.slice(-10))); // Keep last 10
+    console.log('Analytics tracking failed:', error.message);
   });
 }
 
 // Action Functions
 function downloadApp(appId) {
-  // Get the actual download URL from conversion result
-  const result = conversionState.result;
-  if (!result || !result.downloadLinks) {
-    showNotification('Download not available. Please try converting again.', 'error');
-    return;
-  }
-  
+  // Simulate app download
   showNotification('Starting download...', 'info');
     
   setTimeout(() => {
     const link = document.createElement('a');
-    // Use the actual download URL from the API response
-    link.href = result.downloadLinks.android || '/downloads/demo-app.apk';
-    link.download = `${result.appName || 'app'}.apk`;
+    link.href = 'downloads/demo-app.apk';
+    link.download = 'my-app.apk';
     link.click();
         
     showNotification('Download started! Check your downloads folder.', 'success');
   }, 1000);
     
-  trackConversionEvent('app_downloaded', { appId, downloadUrl: result.downloadLinks.android });
+  trackConversionEvent('app_downloaded', { appId });
 }
 
 function previewApp(appId) {
@@ -1199,7 +988,7 @@ function contactSupport() {
                     <i class="fas fa-comments"></i>
                     Live Chat
                 </a>
-                <a href="/help" class="btn btn-outline">
+                <a href="#help" class="btn btn-outline">
                     <i class="fas fa-question-circle"></i>
                     Help Center
                 </a>
@@ -1215,192 +1004,6 @@ function openChat() {
   showNotification('Chat feature coming soon!', 'info');
 }
 
-// Enhanced notification system
-function showNotification(message, type = 'info', duration = 5000) {
-  // Remove existing notifications of same type
-  const existingNotifications = document.querySelectorAll(`.conversion-notification.notification-${type}`);
-  existingNotifications.forEach(notification => notification.remove());
-
-  const notification = document.createElement('div');
-  notification.className = `conversion-notification notification-${type}`;
-  notification.innerHTML = `
-    <div class="notification-content">
-      <i class="fas ${getNotificationIcon(type)}"></i>
-      <span>${message}</span>
-      <button class="notification-close" onclick="this.parentElement.parentElement.remove()">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  `;
-
-  // Add styles
-  notification.style.cssText = `
-    position: fixed;
-    top: ${20 + (document.querySelectorAll('.conversion-notification').length * 80)}px;
-    right: 20px;
-    background: ${getNotificationColor(type)};
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10000;
-    max-width: 400px;
-    animation: slideInRight 0.3s ease-out;
-    font-size: 14px;
-    line-height: 1.4;
-  `;
-
-  document.body.appendChild(notification);
-
-  // Auto remove after duration
-  if (duration > 0) {
-    setTimeout(() => {
-      if (notification.parentElement) {
-        notification.style.animation = 'slideOutRight 0.3s ease-in';
-        setTimeout(() => notification.remove(), 300);
-      }
-    }, duration);
-  }
-
-  return notification;
-}
-
-// Show progress notification
-function showProgressNotification(message, progress = 0) {
-  const existingProgress = document.querySelector('.progress-notification');
-  if (existingProgress) {
-    existingProgress.querySelector('.progress-text').textContent = message;
-    existingProgress.querySelector('.progress-fill').style.width = `${progress}%`;
-    return existingProgress;
-  }
-
-  const notification = document.createElement('div');
-  notification.className = 'conversion-notification progress-notification';
-  notification.innerHTML = `
-    <div class="notification-content">
-      <i class="fas fa-cog fa-spin"></i>
-      <div class="progress-info">
-        <span class="progress-text">${message}</span>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: ${progress}%"></div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: #007bff;
-    color: white;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10000;
-    max-width: 400px;
-    animation: slideInRight 0.3s ease-out;
-  `;
-
-  // Add progress bar styles (only once)
-  if (!document.querySelector('#conversion-styles')) {
-    const style = document.createElement('style');
-    style.id = 'conversion-styles';
-    style.textContent = `
-      .progress-info { margin-left: 10px; flex: 1; }
-      .progress-bar { 
-        width: 100%; 
-        height: 4px; 
-        background: rgba(255,255,255,0.3); 
-        border-radius: 2px; 
-        margin-top: 8px; 
-        overflow: hidden;
-      }
-      .progress-fill { 
-        height: 100%; 
-        background: white; 
-        transition: width 0.3s ease;
-      }
-      .notification-content { display: flex; align-items: center; }
-      
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-      
-      @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.05); }
-        100% { transform: scale(1); }
-      }
-      
-      .conversion-notification {
-        transition: all 0.3s ease;
-      }
-      
-      .conversion-notification:hover {
-        transform: translateX(-5px);
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      }
-      
-      .notification-close {
-        background: none;
-        border: none;
-        color: white;
-        cursor: pointer;
-        padding: 5px;
-        margin-left: 10px;
-        border-radius: 3px;
-        transition: background 0.2s;
-      }
-      
-      .notification-close:hover {
-        background: rgba(255,255,255,0.2);
-      }
-      
-      .test-url-btn {
-        animation: pulse 2s infinite;
-      }
-      
-      .test-url-btn:hover {
-        animation: none;
-        transform: scale(1.05);
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  document.body.appendChild(notification);
-  return notification;
-}
-
-// Get notification icon based on type
-function getNotificationIcon(type) {
-  const icons = {
-    'success': 'fa-check-circle',
-    'error': 'fa-exclamation-circle',
-    'warning': 'fa-exclamation-triangle',
-    'info': 'fa-info-circle'
-  };
-  return icons[type] || icons.info;
-}
-
-// Get notification color based on type
-function getNotificationColor(type) {
-  const colors = {
-    'success': '#28a745',
-    'error': '#dc3545',
-    'warning': '#ffc107',
-    'info': '#17a2b8'
-  };
-  return colors[type] || colors.info;
-}
-
 // Export functions for global access
 window.downloadApp = downloadApp;
 window.previewApp = previewApp;
@@ -1411,8 +1014,6 @@ window.contactSupport = contactSupport;
 window.resetConversion = resetConversion;
 window.retryConversion = retryConversion;
 window.openChat = openChat;
-window.showNotification = showNotification;
-window.showProgressNotification = showProgressNotification;
 
 // Handle page unload during conversion
 window.addEventListener('beforeunload', function(e) {
