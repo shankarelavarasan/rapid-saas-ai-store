@@ -6,7 +6,7 @@
 
 **Please view the live, fully functional version here:**
 
-## 👉 [`https://coruscating-queijadas-4ed716.netlify.app/`](https://coruscating-queijadas-4ed716.netlify.app/) 👈
+## 👉 [`https://rapidsaasaistore.netlify.app/`](https://rapidsaasaistore.netlify.app/) 👈
 
 ---
 
