@@ -1,0 +1,26 @@
+# GitHub Pages Configuration
+title: "Rapid SaaS AI Store"
+description: "Convert Your SaaS to Mobile Apps with AI-powered conversion"
+baseurl: "/rapid-saas-ai-store"
+url: "https://shankarelavarasan.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - LICENSE
+  - node_modules/
+  - package.json
+  - package-lock.json
+
+# Include files
+include:
+  - .nojekyll
+
+# Plugins
+plugins:
+  - jekyll-sitemap
+  - jekyll-feed
