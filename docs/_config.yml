@@ -1,8 +1,8 @@
 # GitHub Pages Configuration
 title: "Rapid SaaS AI Store"
 description: "Convert Your SaaS to Mobile Apps with AI-powered conversion"
-baseurl: "/rapid-saas-ai-store"
-url: "https://shankarelavarasan.github.io"
+baseurl: ""
+url: "https://shankarelavarasan.github.io/rapid-saas-ai-store"
 
 # Build settings
 markdown: kramdown
