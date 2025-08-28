@@ -415,25 +415,41 @@
         <div class="nav-dot" onclick="scrollToSlide(9)"></div>
     </div>
 
+    <!-- Password Protection Overlay -->
+    <div id="passwordOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center; max-width: 400px; width: 90%;">
+            <h2 style="color: #2c3e50; margin-bottom: 20px;">🔐 Protected Content</h2>
+            <p style="color: #7f8c8d; margin-bottom: 30px;">Enter password to access the Rapid AI Store pitch deck</p>
+            <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box;">
+            <button onclick="checkPassword()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">Access Pitch Deck</button>
+            <div id="errorMessage" style="color: #e74c3c; margin-top: 15px; display: none;">Incorrect password. Please try again.</div>
+        </div>
+    </div>
+
     <script>
         // Password protection
         function checkPassword() {
-            const password = prompt('Enter password to access the pitch deck:');
+            const password = document.getElementById('passwordInput').value;
             const correctPassword = 'GoogleAI2024'; // Change this to your desired password
             
-            if (password !== correctPassword) {
-                alert('Incorrect password. Access denied.');
-                document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif; font-size: 24px; color: #666;">Access Denied - Invalid Password</div>';
-                return false;
+            if (password === correctPassword) {
+                document.getElementById('passwordOverlay').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+            } else {
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
             }
-            return true;
         }
 
-        // Check password on page load
-        window.addEventListener('load', () => {
-            if (!checkPassword()) {
-                return;
-            }
+        // Allow Enter key to submit password
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+            document.getElementById('passwordInput').focus();
         });
 
         function scrollToSlide(slideNumber) {
