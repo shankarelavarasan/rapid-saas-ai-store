@@ -4,9 +4,8 @@
 
 **This project is deployed on multiple platforms for optimal performance and reliability:**
 
-**🌐 Live Demo Sites:**
-- **Netlify:** [`https://rapidsaasaistore.netlify.app/`](https://rapidsaasaistore.netlify.app/)
-- **GitHub Pages:** [Your GitHub Pages URL]
+**🌐 Live Demo Site:**
+- **GitHub Pages:** [`https://shankarelavarasan.github.io/rapid-saas-ai-store/`](https://shankarelavarasan.github.io/rapid-saas-ai-store/)
 
 ---
 
