@@ -900,6 +900,197 @@
 }
 
 /* ==========================================================================
+   STORE SPECIFIC RESPONSIVE STYLES
+   ========================================================================== */
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    /* Search Section Mobile */
+    .search-section {
+        padding: 60px 0 40px;
+    }
+    
+    .store-title {
+        font-size: 2.5rem;
+    }
+    
+    .store-subtitle {
+        font-size: 1.125rem;
+    }
+    
+    .search-input-wrapper {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+    
+    .search-input {
+        padding: 16px 20px;
+    }
+    
+    .search-icon {
+        display: none;
+    }
+    
+    .search-btn {
+        width: 100%;
+        border-radius: var(--radius-md);
+    }
+    
+    /* Categories Mobile */
+    .categories-section {
+        padding: 40px 0;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 12px;
+    }
+    
+    .category-item {
+        padding: 16px 8px;
+    }
+    
+    .category-item i {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+    
+    .category-item span {
+        font-size: 12px;
+    }
+    
+    /* Apps Section Mobile */
+    .apps-section {
+        padding: 60px 0;
+    }
+    
+    .apps-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .apps-controls {
+        width: 100%;
+    }
+    
+    .sort-select {
+        width: 100%;
+    }
+    
+    .apps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .app-card {
+        padding: 16px;
+    }
+    
+    .app-header {
+        gap: 12px;
+    }
+    
+    .app-icon {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .app-info h3 {
+        font-size: 1.125rem;
+    }
+    
+    .app-info p {
+        font-size: 13px;
+    }
+    
+    /* Convert Section Mobile */
+    .convert-section {
+        padding: 60px 0;
+    }
+    
+    /* Partners Section Mobile */
+    .partners-section {
+        padding: 60px 0;
+    }
+    
+    .partners-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+    
+    .partner-card {
+        padding: 32px 24px;
+    }
+    
+    .partner-card i {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+    
+    /* Header Mobile */
+    .header .container {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .nav {
+        gap: 20px;
+    }
+    
+    .nav-link {
+        font-size: 14px;
+    }
+}
+
+/* Tablet Styles */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .apps-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    }
+    
+    .partners-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+/* Large Mobile Styles */
+@media (max-width: 480px) {
+    .store-title {
+        font-size: 2rem;
+    }
+    
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .category-item {
+        padding: 12px 8px;
+    }
+    
+    .category-item span {
+        font-size: 11px;
+    }
+    
+    .app-card {
+        padding: 12px;
+    }
+    
+    .partner-card {
+        padding: 24px 16px;
+    }
+}
+
+/* ==========================================================================
    PRINT STYLES
    ========================================================================== */
 

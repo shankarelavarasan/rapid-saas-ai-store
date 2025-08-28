@@ -336,12 +336,13 @@ function showConversionSuccess(analysis) {
 async function loadFeaturedApps() {
   try {
     // Use local JSON file for GitHub Pages compatibility
-    const appsUrl = new URL('./data/featured-apps.json', window.location.href).toString();
+    const appsUrl = new URL('./data/store-apps.json', window.location.href).toString();
     const response = await fetch(appsUrl);
     const data = await response.json();
         
     if (data.success && data.apps) {
-      renderApps(data.apps);
+      appStoreState.apps = data.apps;
+      filterAndDisplayApps();
     } else {
       renderDemoApps();
     }
@@ -356,33 +357,40 @@ function renderDemoApps() {
     {
       id: 'demo-1',
       name: 'TaskFlow Pro',
-      description: 'Project management made simple',
-      icon: '/assets/demo-app-1.png',
+      description: 'Advanced project management and team collaboration',
+      icon: 'assets/demo-app-1.png',
       rating: 4.8,
-      downloads: 1200,
-      category: 'productivity'
+      downloads: 12000,
+      category: 'productivity',
+      developer: 'ProductivityCorp',
+      price: 'Free'
     },
     {
       id: 'demo-2',
       name: 'FinanceTracker',
-      description: 'Track your expenses effortlessly',
-      icon: '/assets/demo-app-2.png',
+      description: 'Personal finance management and expense tracking',
+      icon: 'assets/demo-app-2.png',
       rating: 4.6,
-      downloads: 850,
-      category: 'finance'
+      downloads: 8500,
+      category: 'finance',
+      developer: 'MoneyWise Solutions',
+      price: 'Free'
     },
     {
       id: 'demo-3',
       name: 'LearnHub',
-      description: 'Online learning platform',
-      icon: '/assets/demo-app-3.png',
+      description: 'Online learning platform with interactive courses',
+      icon: 'assets/demo-app-3.png',
       rating: 4.9,
-      downloads: 2100,
-      category: 'education'
+      downloads: 21000,
+      category: 'education',
+      developer: 'EduTech Corp',
+      price: 'Freemium'
     }
   ];
     
-  renderApps(demoApps);
+  appStoreState.apps = demoApps;
+  filterAndDisplayApps();
 }
 
 function renderApps(apps) {
@@ -403,28 +411,22 @@ function createAppCard(app) {
   card.setAttribute('data-category', app.category || 'other');
     
   card.innerHTML = `
-        <div class="app-icon">
-            <img src="${app.icon || 'assets/default-app-icon.svg'}" alt="${app.name}" onerror="this.src='assets/default-app-icon.svg'">
-        </div>
-        <div class="app-info">
-            <h3 class="app-name">${app.name}</h3>
-            <p class="app-description">${app.description}</p>
-            <div class="app-rating">
-                <div class="stars">
-                    ${generateStars(app.rating || 4.5)}
+        <div class="app-header">
+            <img src="${app.icon || 'assets/default-app-icon.png'}" alt="${app.name}" class="app-icon" onerror="this.src='assets/default-app-icon.png'">
+            <div class="app-info">
+                <h3>${app.name}</h3>
+                <p>${app.description}</p>
+                <div class="app-rating">
+                    <span class="stars">${generateStars(app.rating || 4.5)}</span>
+                    <span class="rating-text">${app.rating || 4.5} (${formatNumber(app.downloads || 0)})</span>
                 </div>
-                <span class="rating-text">${app.rating || 4.5} (${formatNumber(app.downloads || 0)})</span>
             </div>
-            <div class="app-actions">
-                <button class="btn btn-primary btn-small" onclick="installApp('${app.id}')">
-                    <i class="fas fa-download"></i>
-                    Install
-                </button>
-                <button class="btn btn-secondary btn-small" onclick="previewApp('${app.id}')">
-                    <i class="fas fa-eye"></i>
-                    Preview
-                </button>
-            </div>
+        </div>
+        <div class="app-actions">
+            <button class="btn btn-primary" onclick="downloadApp('${app.id}')">
+                <i class="fas fa-download"></i>
+                ${app.price || 'Free'}
+            </button>
         </div>
     `;
     
@@ -698,6 +700,9 @@ function handleResize() {
   }
 }
 
+// App Store State (declared in app-store.js)
+// appStoreState is imported from app-store.js
+
 // Initialize animations
 function initializeAnimations() {
   // Initialize AOS (Animate On Scroll)
@@ -709,11 +714,225 @@ function initializeAnimations() {
       offset: 100
     });
   }
+  
+  // Initialize app store functionality
+  initializeAppStore();
+}
+
+// Initialize App Store
+function initializeAppStore() {
+    setupSearchFunctionality();
+    setupCategoryFilters();
+    setupSortFunctionality();
+    setupLoadMore();
+}
+
+// Setup Search Functionality
+function setupSearchFunctionality() {
+    const searchInput = document.getElementById('app-search');
+    const searchBtn = document.getElementById('search-btn');
+    
+    if (searchInput) {
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                appStoreState.searchQuery = this.value.toLowerCase();
+                filterAndDisplayApps();
+            }, 300);
+        });
+    }
+    
+    if (searchBtn) {
+        searchBtn.addEventListener('click', function() {
+            if (searchInput) {
+                appStoreState.searchQuery = searchInput.value.toLowerCase();
+                filterAndDisplayApps();
+            }
+        });
+    }
+}
+
+// Setup Category Filters
+function setupCategoryFilters() {
+    const categoryItems = document.querySelectorAll('.category-item');
+    
+    categoryItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active class from all items
+            categoryItems.forEach(cat => cat.classList.remove('active'));
+            
+            // Add active class to clicked item
+            this.classList.add('active');
+            
+            // Update state and filter
+            appStoreState.currentCategory = this.dataset.category;
+            appStoreState.currentPage = 1;
+            filterAndDisplayApps();
+            
+            // Update section title
+            updateSectionTitle();
+        });
+    });
+}
+
+// Setup Sort Functionality
+function setupSortFunctionality() {
+    const sortSelect = document.getElementById('sort-select');
+    
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            appStoreState.currentSort = this.value;
+            appStoreState.currentPage = 1;
+            filterAndDisplayApps();
+        });
+    }
+}
+
+// Setup Load More
+function setupLoadMore() {
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            appStoreState.currentPage++;
+            displayApps(false); // false means append, not replace
+        });
+    }
+}
+
+// Filter and Display Apps
+function filterAndDisplayApps() {
+    let filtered = [...appStoreState.apps];
+    
+    // Filter by category
+    if (appStoreState.currentCategory !== 'all') {
+        filtered = filtered.filter(app => {
+            // Map new categories to existing ones
+            const categoryMap = {
+                'ide': ['productivity', 'business'],
+                'saas': ['business', 'productivity'],
+                'app': ['productivity', 'finance', 'education'],
+                'webapp': ['business', 'social'],
+                'software': ['productivity', 'utilities'],
+                'plugin': ['utilities', 'productivity']
+            };
+            
+            if (categoryMap[appStoreState.currentCategory]) {
+                return categoryMap[appStoreState.currentCategory].includes(app.category);
+            }
+            
+            return app.category === appStoreState.currentCategory;
+        });
+    }
+    
+    // Filter by search query
+    if (appStoreState.searchQuery) {
+        filtered = filtered.filter(app => 
+            app.name.toLowerCase().includes(appStoreState.searchQuery) ||
+            app.description.toLowerCase().includes(appStoreState.searchQuery) ||
+            app.category.toLowerCase().includes(appStoreState.searchQuery)
+        );
+    }
+    
+    // Sort apps
+    filtered = sortApps(filtered);
+    
+    appStoreState.filteredApps = filtered;
+    appStoreState.currentPage = 1;
+    displayApps(true); // true means replace
+}
+
+// Sort Apps
+function sortApps(apps) {
+    switch (appStoreState.currentSort) {
+        case 'rating':
+            return apps.sort((a, b) => b.rating - a.rating);
+        case 'downloads':
+            return apps.sort((a, b) => b.downloads - a.downloads);
+        case 'newest':
+            return apps.sort((a, b) => new Date(b.updated || 0) - new Date(a.updated || 0));
+        case 'name':
+            return apps.sort((a, b) => a.name.localeCompare(b.name));
+        case 'featured':
+        default:
+            return apps.sort((a, b) => (b.featured || 0) - (a.featured || 0));
+    }
+}
+
+// Display Apps
+function displayApps(replace = true) {
+    const container = document.getElementById('apps-container');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    
+    if (!container) return;
+    
+    const startIndex = (appStoreState.currentPage - 1) * appStoreState.appsPerPage;
+    const endIndex = startIndex + appStoreState.appsPerPage;
+    const appsToShow = appStoreState.filteredApps.slice(startIndex, endIndex);
+    
+    if (replace) {
+        container.innerHTML = '';
+    }
+    
+    appsToShow.forEach(app => {
+        const appCard = createAppCard(app);
+        container.appendChild(appCard);
+    });
+    
+    // Show/hide load more button
+    if (loadMoreContainer) {
+        const hasMore = endIndex < appStoreState.filteredApps.length;
+        loadMoreContainer.style.display = hasMore ? 'block' : 'none';
+    }
+    
+    // Update apps count
+    updateAppsCount();
+}
+
+// Update Section Title
+function updateSectionTitle() {
+    const title = document.getElementById('apps-title');
+    if (title) {
+        const categoryNames = {
+            'all': 'Featured Apps',
+            'ide': 'IDE Applications',
+            'saas': 'SaaS Applications',
+            'app': 'Mobile Apps',
+            'webapp': 'Web Applications',
+            'software': 'Software Tools',
+            'plugin': 'Plugins & Addons'
+        };
+        
+        title.textContent = categoryNames[appStoreState.currentCategory] || 'Featured Apps';
+    }
+}
+
+// Update Apps Count
+function updateAppsCount() {
+    const countElement = document.getElementById('apps-count');
+    if (countElement) {
+        const count = appStoreState.filteredApps.length;
+        countElement.textContent = `${count} app${count !== 1 ? 's' : ''}`;
+    }
+}
+
+// Download App Function
+function downloadApp(appId) {
+    const app = appStoreState.apps.find(a => a.id === appId);
+    if (app) {
+        // In a real app, this would handle the download
+        alert(`Downloading ${app.name}...\n\nThis would redirect to the app download or conversion process.`);
+        
+        // You could redirect to conversion page
+        // window.location.href = `convert.html?app=${appId}`;
+    }
 }
 
 // Export functions for global access
 window.installApp = installApp;
 window.previewApp = previewApp;
+window.downloadApp = downloadApp;
 window.showNotification = showNotification;
 window.showModal = showModal;
 window.closeModal = closeModal;

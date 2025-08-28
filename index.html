@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./css/components.css">
     <link rel="stylesheet" href="./css/responsive.css">
     <link rel="stylesheet" href="./css/aos.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
@@ -23,27 +24,128 @@
         </header>
 
         <main class="main">
-            <section id="home" class="hero">
+            <!-- Search Section -->
+            <section id="search" class="search-section">
                 <div class="container">
-                    <h2 class="hero-title" data-aos="fade-up" data-aos-delay="100">Convert Your SaaS to Mobile Apps</h2>
-                    <p class="hero-description" data-aos="fade-up" data-aos-delay="200">Transform your web applications into native mobile experiences with AI-powered conversion.</p>
-                    <button id="start-conversion" class="btn btn-primary" data-aos="fade-up" data-aos-delay="300">Get Started</button>
+                    <div class="search-header">
+                        <h1 class="store-title" data-aos="fade-up">🚀 Rapid AI Store</h1>
+                        <p class="store-subtitle" data-aos="fade-up" data-aos-delay="100">Discover and convert amazing SaaS applications into mobile apps with lightning speed</p>
+                    </div>
+                    
+                    <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+                        <div class="search-input-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="app-search" placeholder="Search apps, categories, or features..." class="search-input">
+                            <button class="search-btn" id="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
+            <!-- Categories Section -->
+            <section id="categories" class="categories-section">
+                <div class="container">
+                    <div class="categories-header" data-aos="fade-up">
+                        <h2>Browse by Category</h2>
+                    </div>
+                    <div class="categories-grid" data-aos="fade-up" data-aos-delay="100">
+                        <div class="category-item active" data-category="all">
+                            <i class="fas fa-th"></i>
+                            <span>All</span>
+                        </div>
+                        <div class="category-item" data-category="ide">
+                            <i class="fas fa-code"></i>
+                            <span>IDE</span>
+                        </div>
+                        <div class="category-item" data-category="saas">
+                            <i class="fas fa-cloud"></i>
+                            <span>SaaS</span>
+                        </div>
+                        <div class="category-item" data-category="app">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>App</span>
+                        </div>
+                        <div class="category-item" data-category="webapp">
+                            <i class="fas fa-globe"></i>
+                            <span>Web App</span>
+                        </div>
+                        <div class="category-item" data-category="software">
+                            <i class="fas fa-desktop"></i>
+                            <span>Software</span>
+                        </div>
+                        <div class="category-item" data-category="plugin">
+                            <i class="fas fa-puzzle-piece"></i>
+                            <span>Plugin/Addon</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apps Section -->
+            <section id="apps" class="apps-section">
+                <div class="container">
+                    <div class="apps-header" data-aos="fade-up">
+                        <h2 id="apps-title">Featured Apps</h2>
+                        <div class="apps-controls">
+                            <select id="sort-select" class="sort-select">
+                                <option value="featured">Featured</option>
+                                <option value="rating">Highest Rated</option>
+                                <option value="downloads">Most Downloaded</option>
+                                <option value="newest">Newest</option>
+                                <option value="name">Name A-Z</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="apps-container" class="apps-grid" data-aos="fade-up" data-aos-delay="100">
+                        <!-- Apps will be loaded here -->
+                    </div>
+                    <div class="load-more-container" id="load-more-container">
+                        <button id="load-more-btn" class="btn btn-secondary">Load More Apps</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Convert Section -->
             <section id="convert" class="convert-section">
                 <div class="container">
-                    <div class="convert-form">
+                    <div class="convert-header" data-aos="fade-up">
+                        <h2>Convert Your SaaS to Mobile App</h2>
+                        <p>Transform your web application into a native mobile experience</p>
+                    </div>
+                    <div class="convert-form" data-aos="fade-up" data-aos-delay="100">
                         <!-- Conversion form will be loaded here by conversion.js -->
                     </div>
                 </div>
             </section>
 
-            <section id="apps" class="apps-section">
+            <!-- Partners Section -->
+            <section id="partners" class="partners-section">
                 <div class="container">
-                    <h2 data-aos="fade-up">Available Apps</h2>
-                    <div id="apps-container" class="apps-grid" data-aos="fade-up" data-aos-delay="100">
-                        <!-- Apps will be loaded here -->
+                    <div class="partners-header" data-aos="fade-up">
+                        <h2>Partner Dashboard</h2>
+                        <p>Access analytics and manage your converted apps</p>
+                    </div>
+                    <div class="partners-grid" data-aos="fade-up" data-aos-delay="100">
+                        <div class="partner-card">
+                            <i class="fas fa-chart-bar"></i>
+                            <h3>Analytics</h3>
+                            <p>View app performance and user engagement</p>
+                            <a href="dashboard.html" class="btn btn-outline">View Analytics</a>
+                        </div>
+                        <div class="partner-card">
+                            <i class="fas fa-upload"></i>
+                            <h3>Publish App</h3>
+                            <p>Submit your app for conversion and publishing</p>
+                            <a href="publish.html" class="btn btn-outline">Publish Now</a>
+                        </div>
+                        <div class="partner-card">
+                            <i class="fas fa-cogs"></i>
+                            <h3>Manage Apps</h3>
+                            <p>Update and manage your published applications</p>
+                            <a href="dashboard.html" class="btn btn-outline">Manage</a>
+                        </div>
                     </div>
                 </div>
             </section>
