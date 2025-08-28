@@ -43,11 +43,6 @@ function setupConversionElements() {
   const existingForm = convertSection.querySelector('.convert-form');
   if (existingForm) {
     existingForm.innerHTML = `
-            <div class="convert-header">
-                <h2>Convert Your SaaS to Mobile App</h2>
-                <p>Transform any web application into a native mobile app in minutes</p>
-            </div>
-            
             <form id="conversion-form" class="conversion-form">
                 <div class="url-input-section">
                     <div class="input-group">
