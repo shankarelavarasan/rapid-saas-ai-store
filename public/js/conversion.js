@@ -605,17 +605,9 @@ function showConversionSuccess(result) {
                     </div>
                     
                     <div class="secondary-actions">
-                        <button class="btn btn-outline" onclick="goToDashboard()">
-                            <i class="fas fa-tachometer-alt"></i>
-                            View Dashboard
-                        </button>
                         <button class="btn btn-outline" onclick="shareApp('${result.appId}')">
                             <i class="fas fa-share"></i>
                             Share App
-                        </button>
-                        <button class="btn btn-outline" onclick="publishToStore('${result.appId}')">
-                            <i class="fas fa-store"></i>
-                            Publish to Store
                         </button>
                     </div>
                 </div>
