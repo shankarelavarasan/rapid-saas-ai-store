@@ -56,7 +56,7 @@ Rapid AI Store Team
 
 - **Executive Summary**: `executive-summary.md`
 - **Detailed Pitch Deck**: `pitch-deck.md`
-- **Live Demo**: `https://shankarelavarasan.github.io/rapid-saas-ai-store/`
+- **Live Demo**: `https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html`
 - **GitHub Repository**: `https://github.com/shankarelavarasan/rapid-saas-ai-store`
 
 ---

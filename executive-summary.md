@@ -124,7 +124,7 @@
 
 ## 📋 Key Links
 
-- **Live Platform**: [https://shankarelavarasan.github.io/rapid-saas-ai-store/](https://shankarelavarasan.github.io/rapid-saas-ai-store/)
+- **Live Platform**: [https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html](https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html)
 - **GitHub Repository**: [https://github.com/shankarelavarasan/rapid-saas-ai-store](https://github.com/shankarelavarasan/rapid-saas-ai-store)
 - **Interactive Pitch Deck**: [View HTML Presentation](./pitch-deck.html)
 
