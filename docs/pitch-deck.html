@@ -289,7 +289,12 @@
     <!-- Slide 1: Title -->
     <div class="slide" id="slide1">
         <div class="content">
-            <div class="logo">🚀</div>
+            <div class="logo-video-container" onclick="playLogoVideoAndRedirect()">
+                <video id="logoVideo" muted style="width: 150px; height: 150px; border-radius: 50%; cursor: pointer; object-fit: cover;">
+                    <source src="logo-video/logo-video.mp4" type="video/mp4">
+                    🚀
+                </video>
+            </div>
             <h1>Rapid AI Store</h1>
             <p class="subtitle">Democratizing AI Access Through a Revolutionary Marketplace Platform</p>
             <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/index-landing.html" class="cta-button" target="_blank">Access Platform</a>
@@ -585,6 +590,17 @@
                 scrollToSlide(prevIndex + 1);
             }
         });
+
+        // Logo video autoplay and redirect function
+        function playLogoVideoAndRedirect() {
+            const logoVideo = document.getElementById('logoVideo');
+            logoVideo.play();
+            
+            // Redirect to protected content page after video ends
+            logoVideo.addEventListener('ended', function() {
+                window.location.href = 'https://shankarelavarasan.github.io/rapid-saas-ai-store/';
+            });
+        }
 
 
     </script>
