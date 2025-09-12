@@ -9,6 +9,14 @@
     <link rel="stylesheet" href="/rapid-saas-ai-store/css/components.css">
     <link rel="stylesheet" href="/rapid-saas-ai-store/css/responsive.css">
     <link rel="stylesheet" href="/rapid-saas-ai-store/css/aos.min.css">
+    <script>
+        // Check if user is coming from landing page
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.get('authenticated')) {
+            // Redirect to landing page for logo video authentication
+            window.location.href = 'index-landing.html';
+        }
+    </script>
 </head>
 <body>
     <div id="app">
