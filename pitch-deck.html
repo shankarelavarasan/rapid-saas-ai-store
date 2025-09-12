@@ -570,22 +570,36 @@
 
     <script>
         // Video Modal Functions
-        function openVideoModal() {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('logoVideo');
-            
-            modal.style.display = 'block';
-            
-            // Auto-play the video
-            video.currentTime = 0;
-            video.play().catch(e => {
-                console.log('Auto-play prevented by browser:', e);
-                // If auto-play fails, user will need to click play manually
-            });
-            
-            // Listen for video end to show password overlay
-            video.addEventListener('ended', showPasswordOverlay);
-        }
+         function openVideoModal() {
+             const modal = document.getElementById('videoModal');
+             const video = document.getElementById('logoVideo');
+             
+             modal.style.display = 'block';
+             
+             // Auto-play the video
+             video.currentTime = 0;
+             video.play().catch(e => {
+                 console.log('Auto-play prevented by browser:', e);
+                 // If auto-play fails, user will need to click play manually
+             });
+             
+             // Listen for video end to show password overlay
+             video.addEventListener('ended', showPasswordOverlay);
+             
+             // Handle video load error - show password overlay after 3 seconds if video fails
+             video.addEventListener('error', function() {
+                 console.log('Video failed to load, showing password overlay after 3 seconds');
+                 setTimeout(showPasswordOverlay, 3000);
+             });
+             
+             // Also add a fallback timer in case video doesn't load
+             setTimeout(function() {
+                 if (video.readyState === 0) {
+                     console.log('Video not loaded after 5 seconds, showing password overlay');
+                     showPasswordOverlay();
+                 }
+             }, 5000);
+         }
         
         function closeVideoModal() {
             const modal = document.getElementById('videoModal');
