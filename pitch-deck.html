@@ -547,7 +547,15 @@
     <div id="videoModal" class="video-modal">
         <div class="video-modal-content">
             <button class="video-close" onclick="closeVideoModal()">&times;</button>
-            <video id="logoVideo" controls>
+            <div id="videoPlaceholder" style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; text-align: center; flex-direction: column;">
+                <div style="font-size: 4rem; margin-bottom: 20px;">🚀</div>
+                <div>Rapid AI Store</div>
+                <div style="font-size: 1rem; margin-top: 10px; opacity: 0.8;">Logo Animation Playing...</div>
+                <div id="progressBar" style="width: 80%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 20px; overflow: hidden;">
+                    <div id="progress" style="width: 0%; height: 100%; background: white; border-radius: 2px; transition: width 0.1s ease;"></div>
+                </div>
+            </div>
+            <video id="logoVideo" controls style="display: none;">
                 <source src="logo%20video/logo-video.mp4" type="video/mp4">
                 <source src="logo-video/logo-video.mp4" type="video/mp4">
                 Your browser does not support the video tag.
@@ -571,35 +579,43 @@
     <script>
         // Video Modal Functions
          function openVideoModal() {
-             const modal = document.getElementById('videoModal');
-             const video = document.getElementById('logoVideo');
-             
-             modal.style.display = 'block';
-             
-             // Auto-play the video
-             video.currentTime = 0;
-             video.play().catch(e => {
-                 console.log('Auto-play prevented by browser:', e);
-                 // If auto-play fails, user will need to click play manually
-             });
-             
-             // Listen for video end to show password overlay
-             video.addEventListener('ended', showPasswordOverlay);
-             
-             // Handle video load error - show password overlay after 3 seconds if video fails
-             video.addEventListener('error', function() {
-                 console.log('Video failed to load, showing password overlay after 3 seconds');
-                 setTimeout(showPasswordOverlay, 3000);
-             });
-             
-             // Also add a fallback timer in case video doesn't load
-             setTimeout(function() {
-                 if (video.readyState === 0) {
-                     console.log('Video not loaded after 5 seconds, showing password overlay');
-                     showPasswordOverlay();
-                 }
-             }, 5000);
-         }
+              const modal = document.getElementById('videoModal');
+              const video = document.getElementById('logoVideo');
+              const placeholder = document.getElementById('videoPlaceholder');
+              const progressBar = document.getElementById('progress');
+              
+              modal.style.display = 'block';
+              
+              // Try to play the actual video first
+              video.currentTime = 0;
+              video.play().then(() => {
+                  // Video loaded successfully, hide placeholder and show video
+                  placeholder.style.display = 'none';
+                  video.style.display = 'block';
+                  video.addEventListener('ended', showPasswordOverlay);
+              }).catch(e => {
+                  console.log('Video failed to load, using placeholder animation');
+                  // Video failed, use placeholder with progress animation
+                  video.style.display = 'none';
+                  placeholder.style.display = 'flex';
+                  
+                  // Animate progress bar over 5 seconds
+                  let progress = 0;
+                  const interval = setInterval(() => {
+                      progress += 2;
+                      progressBar.style.width = progress + '%';
+                      
+                      if (progress >= 100) {
+                          clearInterval(interval);
+                          // Show password overlay after animation completes
+                          setTimeout(showPasswordOverlay, 500);
+                      }
+                  }, 100); // Update every 100ms for smooth animation
+              });
+              
+              // Fallback: if video loads but doesn't auto-play, still listen for ended event
+              video.addEventListener('ended', showPasswordOverlay);
+          }
         
         function closeVideoModal() {
             const modal = document.getElementById('videoModal');
