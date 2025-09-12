@@ -289,11 +289,12 @@
     <!-- Slide 1: Title -->
     <div class="slide" id="slide1">
         <div class="content">
-            <div class="logo-video-container" onclick="playLogoVideoAndRedirect()">
-                <video id="logoVideo" muted style="width: 150px; height: 150px; border-radius: 50%; cursor: pointer; object-fit: cover;">
+            <div class="logo-video-container" onclick="playLogoVideoAndRedirect()" style="position: relative; display: inline-block;">
+                <video id="logoVideo" muted preload="auto" style="width: 150px; height: 150px; border-radius: 50%; cursor: pointer; object-fit: cover; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
                     <source src="logo-video/logo-video.mp4" type="video/mp4">
                     🚀
                 </video>
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; pointer-events: none; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">▶</div>
             </div>
             <h1>Rapid AI Store</h1>
             <p class="subtitle">Democratizing AI Access Through a Revolutionary Marketplace Platform</p>
@@ -594,7 +595,24 @@
         // Logo video autoplay and redirect function
         function playLogoVideoAndRedirect() {
             const logoVideo = document.getElementById('logoVideo');
-            logoVideo.play();
+            
+            // Ensure video is loaded and ready
+            logoVideo.load();
+            
+            // Play the video with error handling
+            const playPromise = logoVideo.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log('Video started playing');
+                }).catch(error => {
+                    console.log('Auto-play was prevented:', error);
+                    // If autoplay fails, still redirect after a short delay
+                    setTimeout(() => {
+                        window.location.href = 'https://shankarelavarasan.github.io/rapid-saas-ai-store/';
+                    }, 1000);
+                });
+            }
             
             // Redirect to protected content page after video ends
             logoVideo.addEventListener('ended', function() {
