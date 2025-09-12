@@ -149,7 +149,7 @@
             transform: scale(1.05);
         }
 
-        .logo-video {
+        .logo-button {
             width: 200px;
             height: 200px;
             border-radius: 50%;
@@ -157,86 +157,18 @@
             margin-bottom: 30px;
             transition: transform 0.3s ease;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .logo-video:hover {
-            transform: scale(1.1);
-        }
-
-        .video-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .video-container {
-            position: relative;
-            max-width: 80%;
-            max-height: 80%;
-        }
-
-        .video-container video {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .close-video {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        .auth-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 1001;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .auth-form {
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .auth-form input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .auth-form button {
             background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
             color: white;
-            padding: 15px 30px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px;
+            text-decoration: none;
+        }
+
+        .logo-button:hover {
+            transform: scale(1.1);
         }
 
         .logo {
@@ -289,11 +221,7 @@
     <!-- Slide 1: Title -->
     <div class="slide" id="slide1">
         <div class="content">
-            <div class="logo-container" onclick="redirectToProtectedContent()" style="position: relative; display: inline-block; cursor: pointer;">
-                <div style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; transition: transform 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-                    🚀
-                </div>
-            </div>
+            <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/" class="logo-button" target="_blank">🚀</a>
             <h1>Rapid AI Store</h1>
             <p class="subtitle">Democratizing AI Access Through a Revolutionary Marketplace Platform</p>
             <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/index-landing.html" class="cta-button" target="_blank">Access Platform</a>
@@ -511,43 +439,9 @@
         <div class="nav-dot" onclick="scrollToSlide(9)"></div>
     </div>
 
-    <!-- Password Protection Overlay -->
-    <div id="passwordOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); z-index: 10000; display: flex; justify-content: center; align-items: center;">
-        <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); text-align: center; max-width: 400px; width: 90%;">
-            <h2 style="color: #2c3e50; margin-bottom: 20px;">🔐 Protected Content</h2>
-            <p style="color: #7f8c8d; margin-bottom: 30px;">Enter password to access the Rapid AI Store pitch deck</p>
-            <input type="password" id="passwordInput" placeholder="Enter password" style="width: 100%; padding: 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; margin-bottom: 20px; box-sizing: border-box;">
-            <button onclick="checkPassword()" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 15px 30px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; width: 100%;">Access Pitch Deck</button>
-            <div id="errorMessage" style="color: #e74c3c; margin-top: 15px; display: none;">Incorrect password. Please try again.</div>
-        </div>
-    </div>
+
 
     <script>
-        // Password protection
-        function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            const correctPassword = 'GoogleAI2024'; // Change this to your desired password
-            
-            if (password === correctPassword) {
-                document.getElementById('passwordOverlay').style.display = 'none';
-                document.getElementById('errorMessage').style.display = 'none';
-            } else {
-                document.getElementById('errorMessage').style.display = 'block';
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
-        }
-
-        // Allow Enter key to submit password
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('passwordInput').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    checkPassword();
-                }
-            });
-            document.getElementById('passwordInput').focus();
-        });
-
         function scrollToSlide(slideNumber) {
             const slide = document.getElementById(`slide${slideNumber}`);
             slide.scrollIntoView({ behavior: 'smooth' });
