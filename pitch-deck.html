@@ -5,90 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapid AI Store - Pitch Deck</title>
     <style>
-        /* Password Protection Overlay */
-        .password-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            color: white;
-        }
-        
-        .password-container {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .password-title {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            font-weight: 300;
-        }
-        
-        .password-subtitle {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-            opacity: 0.8;
-        }
-        
-        .password-input {
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            border: none;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            width: 300px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.9);
-            color: #333;
-        }
-        
-        .password-button {
-            padding: 15px 30px;
-            font-size: 1.1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-        
-        .password-button:hover {
-            transform: translateY(-2px);
-        }
-        
-        .password-error {
-            color: #ff6b6b;
-            margin-top: 15px;
-            font-size: 1rem;
-        }
-        
-        .hidden {
-            display: none !important;
-        }
-        
-        .pitch-content {
-            display: none;
-        }
-        
-        .pitch-content.unlocked {
-            display: block;
-        }
-
-        /* Original Styles */
         * {
             margin: 0;
             padding: 0;
@@ -255,109 +171,6 @@
             transform: scale(1.1);
         }
 
-        /* Video Modal Styles */
-        .video-modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-        }
-
-        .video-modal-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            max-width: 800px;
-        }
-
-        .video-modal video {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        .video-close {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            background: none;
-            border: none;
-        }
-
-        /* Password Protection Overlay */
-        .password-overlay {
-            display: none;
-            position: fixed;
-            z-index: 3000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.95);
-        }
-
-        .password-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .password-content h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-
-        .password-content input {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .password-content input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .password-content button {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 10px 5px;
-            transition: transform 0.3s ease;
-        }
-
-        .password-content button:hover {
-            transform: scale(1.05);
-        }
-
-        .password-content .cancel-btn {
-            background: #95a5a6;
-        }
-
         .logo {
             font-size: 4rem;
             margin-bottom: 20px;
@@ -405,281 +218,211 @@
     </style>
 </head>
 <body>
-    <!-- Password Protection Overlay -->
-    <div class="password-overlay" id="passwordOverlay">
-        <div class="password-container">
-            <div class="password-title">🔒 Rapid Tech Pitch Deck</div>
-            <div class="password-subtitle">This presentation is password protected</div>
-            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" onkeypress="handlePasswordKeyPress(event)">
-            <br>
-            <button class="password-button" onclick="checkPassword()">Access Presentation</button>
-            <div class="password-error" id="passwordError"></div>
-        </div>
-    </div>
-    
-    <!-- Main Pitch Deck Content -->
-    <div class="pitch-content" id="pitchContent">
-    <!-- Slide 1: The Company -->
+    <!-- Slide 1: Title -->
     <div class="slide" id="slide1">
         <div class="content">
-            <div class="logo" onclick="openVideoModal()">🚀</div>
-            <h1>Rapid Tech</h1>
-            <p class="subtitle">The Invisible Infrastructure for the Mobile App Economy.</p>
-            <div style="margin: 40px 0;">
-                <h3>Elavarasan Shankar</h3>
-                <p style="font-size: 1.2rem; color: #7f8c8d;">Founder & Chief Architect</p>
-                <p style="margin-top: 20px; color: #34495e;">Rapid Tech | Coimbatore, Tamil Nadu, India</p>
-            </div>
-            <div style="margin-top: 50px;">
-                <button class="cta-button" onclick="openVideoModal()">🎥 Watch Our Vision</button>
-            </div>
+            <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/" class="logo-button" target="_blank">🚀</a>
+            <h1>Rapid AI Store</h1>
+            <p class="subtitle">Democratizing AI Access Through a Revolutionary Marketplace Platform</p>
+            <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/index-landing.html" class="cta-button" target="_blank">Access Platform</a>
         </div>
     </div>
 
 
 
-    <!-- Slide 2: The Mobile Distribution Gap -->
+    <!-- Slide 2: Problem -->
     <div class="slide" id="slide2">
         <div class="content">
-            <h2>📱 The Mobile Distribution Gap</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="font-size: 1.3rem; max-width: 800px; margin: 0 auto;">Millions of world-class SaaS and AI applications are trapped on the web, unable to effectively reach the multi-billion user mobile ecosystem.</p>
-            </div>
+            <h2>🎯 The Problem</h2>
+            <p class="subtitle">The AI revolution is leaving millions behind</p>
             <div class="grid">
-                <div class="card">
-                    <h3>💰 Economic Barrier</h3>
-                    <p>The prohibitive cost and time of finding distributors, managing marketing, and building separate teams.</p>
+                <div class="problem-item">
+                    <h3>73%</h3>
+                    <p>of businesses struggle with AI implementation</p>
                 </div>
-                <div class="card">
-                    <h3>⚙️ Technical Barrier</h3>
-                    <p>The complexity of developing and maintaining separate, high-quality native applications distracts from core product innovation.</p>
+                <div class="problem-item">
+                    <h3>Fragmented</h3>
+                    <p>AI tools scattered across multiple platforms</p>
+                </div>
+                <div class="problem-item">
+                    <h3>High Barriers</h3>
+                    <p>Non-technical users excluded from AI benefits</p>
+                </div>
+                <div class="problem-item">
+                    <h3>Discovery Gap</h3>
+                    <p>Finding the right AI solution is time-consuming</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Slide 3: The Solution -->
+    <!-- Slide 3: Solution -->
     <div class="slide" id="slide3">
         <div class="content">
-            <h2>🌉 The Invisible Bridge to Billions of Users</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="font-size: 1.3rem; max-width: 900px; margin: 0 auto;">Rapid Tech provides a "White-Label" SaaS Platform that acts as an invisible distribution bridge. We empower developers to instantly convert their web applications into high-quality mobile apps and publish them directly to their own Google Play Store account. Our brand remains invisible. The developer's brand is the hero.</p>
+            <h2>💡 Our Solution</h2>
+            <p class="subtitle">One-Stop AI Marketplace for Everyone</p>
+            <div class="grid">
+                <div class="solution-item">
+                    <h3>🎯 Curated Apps</h3>
+                    <p>Pre-vetted, ready-to-use AI applications</p>
+                </div>
+                <div class="solution-item">
+                    <h3>⚡ Zero-Code</h3>
+                    <p>Install and run without technical expertise</p>
+                </div>
+                <div class="solution-item">
+                    <h3>🔗 Unified Platform</h3>
+                    <p>Single destination for all AI needs</p>
+                </div>
+                <div class="solution-item">
+                    <h3>✅ Quality Assured</h3>
+                    <p>Rigorous testing and performance monitoring</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Slide 4: How It Works -->
+    <!-- Slide 4: Market Opportunity -->
     <div class="slide" id="slide4">
         <div class="content">
-            <h2>⚙️ A Seamless Lifecycle for Mobile Distribution</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <div style="font-size: 3rem; margin-bottom: 20px;">🔍➡️📱➡️📤➡️🔄</div>
-            </div>
+            <h2>🌍 Market Opportunity</h2>
             <div class="grid">
                 <div class="card">
-                    <h3>🔍 Analyze</h3>
-                    <p>Our AI intelligently analyzes the target website's architecture and branding.</p>
+                    <div class="metric">$126B</div>
+                    <div class="metric-label">AI Software Market by 2025</div>
+                    <p>42% CAGR Growth Rate</p>
                 </div>
                 <div class="card">
-                    <h3>🏗️ Generate</h3>
-                    <p>It automatically creates a secure, optimized, and production-ready app package.</p>
+                    <div class="metric">$45B</div>
+                    <div class="metric-label">No-Code/Low-Code Market</div>
+                    <p>28% CAGR Growth Rate</p>
                 </div>
                 <div class="card">
-                    <h3>🚀 Publish</h3>
-                    <p>The developer uploads the package directly to their own Play Store account.</p>
+                    <div class="metric">$935B</div>
+                    <div class="metric-label">App Store Economy 2023</div>
+                    <p>Proven Business Model</p>
                 </div>
-                <div class="card">
-                    <h3>🔄 Update</h3>
-                    <p>New features are deployed by simply re-generating the package and replacing the existing version on the Play Store. Effortless maintenance.</p>
-                </div>
-            </div>
-            <div style="margin-top: 40px; text-align: center;">
-                <p style="font-size: 1.2rem; margin-bottom: 20px;"><strong>View the Live Prototype:</strong></p>
-                <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/" class="cta-button" target="_blank">🎯 View Live Demo</a>
             </div>
         </div>
     </div>
 
-    <!-- Slide 5: Unlocking Value for the Entire Ecosystem -->
+    <!-- Slide 5: Business Model -->
     <div class="slide" id="slide5">
         <div class="content">
-            <h2>💎 Unlocking Value for the Entire Ecosystem</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>🏢 For the SaaS Developer (The Seller)</h3>
-                    <ul style="text-align: left; margin-top: 15px;">
-                        <li><strong>Go-to-Market Instantly:</strong> Eliminate months of work and go directly to a global market.</li>
-                        <li><strong>Drastically Reduce Costs:</strong> No need for separate app development teams.</li>
-                        <li><strong>Retain Full Control:</strong> Publish under their own brand.</li>
-                        <li><strong>Unlock New Revenue:</strong> Access billions of mobile users.</li>
-                        <li><strong>Frictionless Global Commerce:</strong> Eliminate the high costs and complexities of international business. No distributor fees, no high SWIFT charges, no fraud concerns – just a direct, trusted pipeline to billions of customers powered by the Google Play ecosystem.</li>
-                    </ul>
-                </div>
-                <div class="card">
-                    <h3>👥 For the End User (The Buyer)</h3>
-                    <ul style="text-align: left; margin-top: 15px;">
-                        <li><strong>Trusted Purchasing:</strong> Buy from anywhere using the secure Google Play payment system.</li>
-                        <li><strong>Transparent & Simple:</strong> No hidden fees or extra charges.</li>
-                        <li><strong>Access to More Tools:</strong> Discover and use powerful web software as native mobile apps.</li>
-                    </ul>
-                </div>
+            <h2>💰 Business Model</h2>
+            <div class="revenue-stream">
+                <h3>Commission Model</h3>
+                <p>30% from paid apps - Industry standard</p>
+            </div>
+            <div class="revenue-stream">
+                <h3>Subscription Tiers</h3>
+                <p>$9.99 - $99.99/month for premium features</p>
+            </div>
+            <div class="revenue-stream">
+                <h3>Enterprise Licensing</h3>
+                <p>$500 - $5,000/month for custom solutions</p>
+            </div>
+            <div class="card" style="margin-top: 30px;">
+                <div class="metric">18:1</div>
+                <div class="metric-label">LTV/CAC Ratio</div>
+                <p>Strong unit economics with 85% gross margin</p>
             </div>
         </div>
     </div>
 
-    <!-- Slide 6: The Market Opportunity -->
+    <!-- Slide 6: Traction -->
     <div class="slide" id="slide6">
         <div class="content">
-            <h2>🌍 Capturing the Next Trillion-Dollar Ecosystem</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="font-size: 1.3rem; max-width: 900px; margin: 0 auto;">The global SaaS market is valued at over <strong>$200 Billion</strong>. The AI tools market is the fastest-growing software category in history. The App Store economy is worth <strong>$935 Billion</strong>.</p>
+            <h2>📈 Traction & Growth</h2>
+            <div class="grid">
+                <div class="milestone">
+                    <h3>✅ Year 1</h3>
+                    <p>10K users, $500K revenue</p>
+                </div>
+                <div class="milestone">
+                    <h3>🎯 Year 2</h3>
+                    <p>100K users, $5M revenue</p>
+                </div>
+                <div class="milestone">
+                    <h3>🚀 Year 3</h3>
+                    <p>500K users, $25M revenue</p>
+                </div>
             </div>
-            <div style="margin-top: 40px; text-align: center;">
-                <p style="font-size: 1.2rem; font-weight: bold; color: #2c3e50;"><strong>Our Vision:</strong> To become the essential backend infrastructure that powers the "Play Store for AI Tools," capturing the untapped market of web-first applications.</p>
+            <div class="card" style="margin-top: 40px;">
+                <h3>Current Status</h3>
+                <p>✅ Live Platform on GitHub Pages<br>
+                ✅ Modern, Responsive Design<br>
+                ✅ Automated CI/CD Pipeline<br>
+                ✅ Scalable Architecture</p>
             </div>
         </div>
     </div>
 
-    <!-- Slide 7: Business Model -->
+    <!-- Slide 7: Funding -->
     <div class="slide" id="slide7">
         <div class="content">
-            <h2>💰 A Partnership Model Built for Scale</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <p style="font-size: 1.3rem; max-width: 800px; margin: 0 auto;">A fair, transparent, and globally accepted revenue-sharing model. From every subscription processed via the generated app:</p>
+            <h2>💸 Funding Requirements</h2>
+            <div class="card" style="margin-bottom: 40px;">
+                <div class="metric">$2M</div>
+                <div class="metric-label">Seed Round</div>
             </div>
-            <div class="grid" style="grid-template-columns: repeat(3, 1fr); max-width: 600px; margin: 0 auto;">
+            <div class="grid">
                 <div class="card">
-                    <div class="metric">70%</div>
-                    <div class="metric-label">to the Developer</div>
+                    <h3>40% - Product</h3>
+                    <p>Backend infrastructure, AI integration, mobile apps</p>
                 </div>
                 <div class="card">
-                    <div class="metric">15%</div>
-                    <div class="metric-label">to Rapid Tech</div>
+                    <h3>35% - Team</h3>
+                    <p>Senior developers, AI/ML engineers, product manager</p>
                 </div>
                 <div class="card">
-                    <div class="metric">15%</div>
-                    <div class="metric-label">to Google</div>
+                    <h3>20% - Marketing</h3>
+                    <p>Digital campaigns, community building, conferences</p>
                 </div>
-            </div>
-            <div style="margin-top: 40px; text-align: center;">
-                <p style="font-size: 1.2rem; font-weight: bold; color: #2c3e50;">This model incentivizes mass adoption and creates a self-perpetuating, high-growth ecosystem.</p>
+                <div class="card">
+                    <h3>5% - Operations</h3>
+                    <p>Legal compliance, office setup, administration</p>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Slide 8: Current Status & Future Projections -->
+    <!-- Slide 8: Why Google -->
     <div class="slide" id="slide8">
         <div class="content">
-            <h2>📈 Current Status & Future Projections</h2>
-            <div style="margin: 40px 0;">
-                <h3 style="color: #2c3e50; margin-bottom: 30px;">Where We Are Today (Pre-Partnership):</h3>
-                <div class="grid" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
-                    <div class="card">
-                        <ul style="text-align: left; font-size: 1.1rem;">
-                            <li><strong>✅ Proven Concept:</strong> A fully functional prototype is live and demonstrable.</li>
-                            <li><strong>✅ Strategic Blueprint:</strong> A complete business and go-to-market plan is ready.</li>
-                            <li><strong>✅ Official Interest:</strong> Application is under review for exclusive Google AI programs.</li>
-                        </ul>
-                    </div>
+            <h2>🤝 Why Google Accelerator?</h2>
+            <div class="grid">
+                <div class="card">
+                    <h3>🎯 Strategic Alignment</h3>
+                    <p>AI-first vision aligns with Google's initiatives</p>
                 </div>
-            </div>
-            <div style="margin: 40px 0;">
-                <h3 style="color: #2c3e50; margin-bottom: 30px;">18-Month Growth Projections (Post-Launch with Google):</h3>
-                <div class="grid">
-                    <div class="card">
-                        <h3>🎯 Phase 1 (Months 1-6)</h3>
-                        <p>Onboard 1,000+ developers & process $1M+ in revenue for them.</p>
-                    </div>
-                    <div class="card">
-                        <h3>🚀 Phase 2 (Months 7-12)</h3>
-                        <p>Scale to 10,000+ developers & process $12M+ in revenue.</p>
-                    </div>
-                    <div class="card">
-                        <h3>🌟 Phase 3 (Months 13-18)</h3>
-                        <p>Achieve market leadership with 50,000+ developers & process $75M+ in revenue.</p>
-                    </div>
+                <div class="card">
+                    <h3>🌐 Global Scale</h3>
+                    <p>Access to Google's worldwide network and infrastructure</p>
+                </div>
+                <div class="card">
+                    <h3>🧠 Technical Expertise</h3>
+                    <p>Mentorship from world-class AI leaders</p>
+                </div>
+                <div class="card">
+                    <h3>💼 Mutual Benefits</h3>
+                    <p>Innovation pipeline and market validation insights</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Slide 9: Our Unfair Advantage -->
+    <!-- Slide 9: Call to Action -->
     <div class="slide" id="slide9">
         <div class="content">
-            <h2>🏆 Our Unfair Advantage</h2>
-            <div class="grid">
-                <div class="card">
-                    <h3>🚀 First-Mover Advantage</h3>
-                    <p>We are pioneering the "White-Label" SaaS-to-mobile distribution space.</p>
-                </div>
-                <div class="card">
-                    <h3>🤖 Proprietary AI Approach</h3>
-                    <p>Our AI engine is custom-tuned for analyzing web apps to generate optimized mobile packages.</p>
-                </div>
-                <div class="card">
-                    <h3>⚡ Speed & Simplicity</h3>
-                    <p>From website to app store in minutes, not months.</p>
-                </div>
-                <div class="card">
-                    <h3>🌐 Network Effects</h3>
-                    <p>Every new developer strengthens the platform, making it harder for competitors to replicate.</p>
-                </div>
+            <div class="logo">🚀</div>
+            <h1>Let's Build the Future</h1>
+            <p class="subtitle">Join us in democratizing AI access and building the world's premier AI application marketplace</p>
+            <div style="margin: 40px 0;">
+                <a href="https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html" class="cta-button" target="_blank">View Live Demo</a>
+                <a href="https://github.com/shankarelavarasan/rapid-saas-ai-store" class="cta-button" target="_blank">GitHub Repository</a>
             </div>
-        </div>
-    </div>
-
-    <!-- Slide 10: The Team -->
-     <div class="slide" id="slide10">
-         <div class="content">
-             <h2>👥 The Team</h2>
-             <div style="text-align: center; margin: 40px 0;">
-                 <h3>A Visionary with Proven Execution</h3>
-             </div>
-             <div class="grid">
-                 <div class="card">
-                     <h3>👨‍💻 Elavarasan Shankar - Founder & Chief Architect</h3>
-                     <p>As a lean founder, I have de-risked the concept by architecting the vision and single-handedly building a fully functional front-end prototype. This demonstrates a hyper-efficient approach and the proven ability to turn complex ideas into reality.</p>
-                 </div>
-             </div>
-         </div>
-     </div>
-
-    <!-- Slide 11: The Strategic Partnership Ask -->
-    <div class="slide" id="slide11">
-        <div class="content">
-            <h2>🤝 The Ask: A Partnership to Build the Future</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <p class="subtitle">We are not seeking traditional funding. We are proposing a true strategic partnership with Google.</p>
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <h3>🚀 We Bring</h3>
-                    <p>A de-risked opportunity, a proven prototype, and a powerful business model.</p>
-                </div>
-                <div class="card">
-                    <h3>🌍 We Ask Google to Bring</h3>
-                    <p>World-class engineering teams for scaling and the global infrastructure for deployment.</p>
-                </div>
-            </div>
-            <div style="margin-top: 40px; text-align: center;">
-                <p><strong>My proposed role is to transition to Strategic Advisor & Product Visionary, ensuring the project achieves its multi-billion dollar potential.</strong></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Slide 12: Contact -->
-    <div class="slide" id="slide12">
-        <div class="content">
-            <h2>📞 Contact</h2>
-            <div style="text-align: center; margin: 40px 0;">
-                <h3>Let's Build the Future. Together.</h3>
-                <p style="font-size: 1.5rem; margin: 40px 0;">Thank you.</p>
-            </div>
-            <div style="text-align: center;">
-                <h3>Elavarasan Shankar</h3>
-                <p>Founder, Rapid Tech</p>
-                <p>shankarelavarasan90@gmail.com | linkedin.com/in/elavarasan-shankar-238a7431b</p>
-            </div>
+            <p style="font-style: italic; color: #7f8c8d; margin-top: 40px;">"The best way to predict the future is to create it." - Peter Drucker</p>
         </div>
     </div>
 
@@ -694,148 +437,11 @@
         <div class="nav-dot" onclick="scrollToSlide(7)"></div>
         <div class="nav-dot" onclick="scrollToSlide(8)"></div>
         <div class="nav-dot" onclick="scrollToSlide(9)"></div>
-        <div class="nav-dot" onclick="scrollToSlide(10)"></div>
-        <div class="nav-dot" onclick="scrollToSlide(11)"></div>
-        <div class="nav-dot" onclick="scrollToSlide(12)"></div>
     </div>
 
-    <!-- Video Modal -->
-    <div id="videoModal" class="video-modal">
-        <div class="video-modal-content">
-            <button class="video-close" onclick="closeVideoModal()">&times;</button>
-            <div id="videoPlaceholder" style="width: 100%; height: 400px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem; text-align: center; flex-direction: column;">
-                <div style="font-size: 4rem; margin-bottom: 20px;">🚀</div>
-                <div>Rapid AI Store</div>
-                <div style="font-size: 1rem; margin-top: 10px; opacity: 0.8;">Logo Animation Playing...</div>
-                <div id="progressBar" style="width: 80%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; margin-top: 20px; overflow: hidden;">
-                    <div id="progress" style="width: 0%; height: 100%; background: white; border-radius: 2px; transition: width 0.1s ease;"></div>
-                </div>
-            </div>
-            <video id="logoVideo" controls style="display: none;">
-                <source src="logo%20video/logo-video.mp4" type="video/mp4">
-                <source src="logo-video/logo-video.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-        </div>
-    </div>
 
-    <!-- Password Protection Overlay -->
-    <div id="passwordOverlay" class="password-overlay">
-        <div class="password-content">
-            <h2>🔒 Access Protected Content</h2>
-            <p>Please enter the password to continue:</p>
-            <input type="password" id="passwordInput" placeholder="Enter password" onkeypress="handlePasswordKeyPress(event)">
-            <div>
-                <button onclick="checkPassword()">Access</button>
-                <button class="cancel-btn" onclick="closePasswordOverlay()">Cancel</button>
-            </div>
-        </div>
-    </div>
 
     <script>
-        // Video Modal Functions
-         function openVideoModal() {
-              const modal = document.getElementById('videoModal');
-              const video = document.getElementById('logoVideo');
-              const placeholder = document.getElementById('videoPlaceholder');
-              const progressBar = document.getElementById('progress');
-              
-              modal.style.display = 'block';
-              
-              // Try to play the actual video first
-              video.currentTime = 0;
-              video.play().then(() => {
-                  // Video loaded successfully, hide placeholder and show video
-                  placeholder.style.display = 'none';
-                  video.style.display = 'block';
-                  video.addEventListener('ended', showPasswordOverlay);
-              }).catch(e => {
-                  console.log('Video failed to load, using placeholder animation');
-                  // Video failed, use placeholder with progress animation
-                  video.style.display = 'none';
-                  placeholder.style.display = 'flex';
-                  
-                  // Animate progress bar over 5 seconds
-                  let progress = 0;
-                  const interval = setInterval(() => {
-                      progress += 2;
-                      progressBar.style.width = progress + '%';
-                      
-                      if (progress >= 100) {
-                          clearInterval(interval);
-                          // Show password overlay after animation completes
-                          setTimeout(showPasswordOverlay, 500);
-                      }
-                  }, 100); // Update every 100ms for smooth animation
-              });
-              
-              // Fallback: if video loads but doesn't auto-play, still listen for ended event
-              video.addEventListener('ended', showPasswordOverlay);
-          }
-        
-        function closeVideoModal() {
-            const modal = document.getElementById('videoModal');
-            const video = document.getElementById('logoVideo');
-            
-            modal.style.display = 'none';
-            video.pause();
-            video.currentTime = 0;
-            
-            // Remove event listener
-            video.removeEventListener('ended', showPasswordOverlay);
-        }
-        
-        function showPasswordOverlay() {
-            const passwordOverlay = document.getElementById('passwordOverlay');
-            passwordOverlay.style.display = 'block';
-            
-            // Focus on password input
-            setTimeout(() => {
-                document.getElementById('passwordInput').focus();
-            }, 100);
-        }
-        
-        function closePasswordOverlay() {
-            const passwordOverlay = document.getElementById('passwordOverlay');
-            passwordOverlay.style.display = 'none';
-            document.getElementById('passwordInput').value = '';
-        }
-        
-        function checkPassword() {
-            const password = document.getElementById('passwordInput').value;
-            const correctPassword = 'rapidai2024'; // You can change this password
-            
-            if (password === correctPassword) {
-                closePasswordOverlay();
-                closeVideoModal();
-                // Redirect to the main site
-                window.open('https://shankarelavarasan.github.io/rapid-saas-ai-store/', '_blank');
-            } else {
-                alert('Incorrect password. Please try again.');
-                document.getElementById('passwordInput').value = '';
-                document.getElementById('passwordInput').focus();
-            }
-        }
-        
-        function handlePasswordKeyPress(event) {
-            if (event.key === 'Enter') {
-                checkPassword();
-            }
-        }
-        
-        // Close modals when clicking outside
-        window.addEventListener('click', function(event) {
-            const videoModal = document.getElementById('videoModal');
-            const passwordOverlay = document.getElementById('passwordOverlay');
-            
-            if (event.target === videoModal) {
-                closeVideoModal();
-            }
-            if (event.target === passwordOverlay) {
-                closePasswordOverlay();
-            }
-        });
-
         function scrollToSlide(slideNumber) {
             const slide = document.getElementById(`slide${slideNumber}`);
             slide.scrollIntoView({ behavior: 'smooth' });
@@ -877,37 +483,13 @@
                 scrollToSlide(prevIndex + 1);
             }
         });
-        
-        // Password Protection Functions
-        function checkPassword() {
-            const passwordInput = document.getElementById('passwordInput');
-            const passwordError = document.getElementById('passwordError');
-            const passwordOverlay = document.getElementById('passwordOverlay');
-            const pitchContent = document.getElementById('pitchContent');
-            
-            if (passwordInput.value === 'GoogleAI2024') {
-                passwordOverlay.classList.add('hidden');
-                pitchContent.classList.add('unlocked');
-                passwordError.textContent = '';
-            } else {
-                passwordError.textContent = 'Incorrect password. Please try again.';
-                passwordInput.value = '';
-                passwordInput.focus();
-            }
+
+        // Redirect to protected content function
+        function redirectToProtectedContent() {
+            window.location.href = 'https://shankarelavarasan.github.io/rapid-saas-ai-store/';
         }
-        
-        function handlePasswordKeyPress(event) {
-            if (event.key === 'Enter') {
-                checkPassword();
-            }
-        }
-        
-        // Auto-focus password input when page loads
-        window.addEventListener('load', function() {
-            document.getElementById('passwordInput').focus();
-        });
+
 
     </script>
-    </div> <!-- Close pitch-content -->
 </body>
 </html>
