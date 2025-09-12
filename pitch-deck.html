@@ -3,8 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapid AI Store - Pitch Deck</title>
+    <title>Rapid Tech - Strategic Pitch Deck</title>
     <style>
+        /* Password Protection Overlay */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .password-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .password-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .access-message {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .password-button {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .password-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -218,6 +295,25 @@
     </style>
 </head>
 <body>
+    <!-- Password Protection Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-container">
+            <h1>🔒 Restricted Access</h1>
+            <div class="access-message">
+                <p><strong>Access to this strategic deck is restricted.</strong></p>
+                <br>
+                <p>This interactive presentation contains the detailed blueprint for Rapid Tech, a multi-billion dollar opportunity.</p>
+                <br>
+                <p>If you are a member of the Google for Startups review team or a potential strategic partner and would like access, please email me directly for the password.</p>
+                <br>
+                <p><strong>shankarelavarasan90@gmail.com</strong></p>
+            </div>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter access code">
+            <button class="password-button" onclick="checkPassword()">Access Presentation</button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+    </div>
+
     <!-- Slide 1: Title Slide -->
     <div class="slide" id="slide1">
         <div class="content">
@@ -534,6 +630,32 @@
             window.location.href = 'https://shankarelavarasan.github.io/rapid-saas-ai-store/';
         }
 
+        // Password protection function
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const overlay = document.getElementById('passwordOverlay');
+            
+            // Set your password here
+            const correctPassword = 'rapidtech2024';
+            
+            if (password === correctPassword) {
+                overlay.classList.add('hidden');
+                errorMessage.textContent = '';
+            } else {
+                errorMessage.textContent = 'Incorrect access code. Please contact shankarelavarasan90@gmail.com for access.';
+                document.getElementById('passwordInput').value = '';
+            }
+        }
+
+        // Allow Enter key to submit password
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
 
     </script>
 </body>

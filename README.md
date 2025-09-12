@@ -7,6 +7,10 @@
 **🌐 Live Demo Site:**
 - **GitHub Pages:** [`https://shankarelavarasan.github.io/rapid-saas-ai-store/`](https://shankarelavarasan.github.io/rapid-saas-ai-store/)
 
+**🔒 Strategic Pitch Deck:**
+- **Password Protected:** [`https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html`](https://shankarelavarasan.github.io/rapid-saas-ai-store/pitch-deck.html)
+- **For access, please contact me directly:** shankarelavarasan90@gmail.com
+
 ---
 
 # 🚀 Rapid AI Store
