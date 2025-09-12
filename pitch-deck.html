@@ -5,6 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapid AI Store - Pitch Deck</title>
     <style>
+        /* Password Protection Overlay */
+        .password-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: white;
+        }
+        
+        .password-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .password-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+        
+        .password-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+        
+        .password-input {
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            width: 300px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+        
+        .password-button {
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .password-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .password-error {
+            color: #ff6b6b;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .pitch-content {
+            display: none;
+        }
+        
+        .pitch-content.unlocked {
+            display: block;
+        }
+
+        /* Original Styles */
         * {
             margin: 0;
             padding: 0;
@@ -321,6 +405,20 @@
     </style>
 </head>
 <body>
+    <!-- Password Protection Overlay -->
+    <div class="password-overlay" id="passwordOverlay">
+        <div class="password-container">
+            <div class="password-title">🔒 Rapid Tech Pitch Deck</div>
+            <div class="password-subtitle">This presentation is password protected</div>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" onkeypress="handlePasswordKeyPress(event)">
+            <br>
+            <button class="password-button" onclick="checkPassword()">Access Presentation</button>
+            <div class="password-error" id="passwordError"></div>
+        </div>
+    </div>
+    
+    <!-- Main Pitch Deck Content -->
+    <div class="pitch-content" id="pitchContent">
     <!-- Slide 1: The Company -->
     <div class="slide" id="slide1">
         <div class="content">
@@ -779,8 +877,37 @@
                 scrollToSlide(prevIndex + 1);
             }
         });
-
+        
+        // Password Protection Functions
+        function checkPassword() {
+            const passwordInput = document.getElementById('passwordInput');
+            const passwordError = document.getElementById('passwordError');
+            const passwordOverlay = document.getElementById('passwordOverlay');
+            const pitchContent = document.getElementById('pitchContent');
+            
+            if (passwordInput.value === 'GoogleAI2024') {
+                passwordOverlay.classList.add('hidden');
+                pitchContent.classList.add('unlocked');
+                passwordError.textContent = '';
+            } else {
+                passwordError.textContent = 'Incorrect password. Please try again.';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        }
+        
+        function handlePasswordKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+        
+        // Auto-focus password input when page loads
+        window.addEventListener('load', function() {
+            document.getElementById('passwordInput').focus();
+        });
 
     </script>
+    </div> <!-- Close pitch-content -->
 </body>
 </html>
