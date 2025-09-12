@@ -644,7 +644,8 @@
             // Check credentials (using existing username/password)
             if (username === 'admin' && password === 'GoogleAI2024') {
                 closeAuthModal();
-                alert('Access granted! Welcome to Rapid AI Store Pitch Deck.');
+                // Redirect to protected content page
+                window.location.href = 'https://shankarelavarasan.github.io/rapid-saas-ai-store/';
             } else {
                 alert('Invalid credentials. Please try again.');
             }
